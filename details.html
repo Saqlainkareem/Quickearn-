@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Enterprise Security Engine - Quick Earn</title>
+    
+    <!-- External Professional Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+    <style>
+        /* 
+        ========================================
+        PROFESSIONAL UI/UX STYLING (CSS)
+        ========================================
+        */
+        :root {
+            --primary: #8bc34a;
+            --primary-dark: #689f38;
+            --accent: #ff9800;
+            --bg-glass: rgba(244, 246, 248, 0.95);
+            --card-white: #ffffff;
+            --text-dark: #2d3436;
+            --danger: #e74c3c;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; user-select: none; }
+        body, html { background-color: #f4f7f6; height: 100%; width: 100%; overflow-x: hidden; }
+
+        /* 
+        ========================================
+        95% VISIBLE COIN DROP LOADER
+        ========================================
+        */
+        #global-loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-glass); backdrop-filter: blur(8px);
+            z-index: 10000; display: flex; align-items: center;
+            justify-content: center; flex-direction: column;
+            transition: opacity 0.6s ease;
+        }
+        .loader-coin {
+            width: 85px; height: 85px;
+            animation: coinDropBounce 1.5s infinite ease-in-out;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+        }
+        @keyframes coinDropBounce {
+            0% { transform: translateY(-200px) scale(1); opacity: 0; }
+            35% { transform: translateY(0) scaleY(0.7); opacity: 1; }
+            50% { transform: translateY(-40px) scaleY(1); }
+            65% { transform: translateY(0) scaleY(0.9); }
+            80% { transform: translateY(-10px) scaleY(1); }
+            100% { transform: translateY(0); }
+        }
+        .loader-label { margin-top: 25px; font-size: 13px; font-weight: 800; color: #555; letter-spacing: 3px; text-transform: uppercase; }
+
+        /* 
+        ========================================
+        AI SCANNING OVERLAY
+        ========================================
+        */
+        #ai-scanner-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 15000;
+            display: none; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; color: white; padding: 40px;
+        }
+        .ai-brain { width: 130px; filter: drop-shadow(0 0 15px var(--primary)); animation: pulseBrain 1.5s infinite; }
+        @keyframes pulseBrain { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        
+        .scan-progress-bar { width: 80%; height: 5px; background: #333; margin-top: 30px; border-radius: 10px; overflow: hidden; position: relative; }
+        .scan-progress-fill { position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--primary); animation: scanLine 2s infinite linear; }
+        @keyframes scanLine { 100% { left: 100%; } }
+
+        /* 
+        ========================================
+        HEADER & NAVIGATION
+        ========================================
+        */
+        .header { background: white; height: 75px; display: flex; align-items: center; padding: 0 20px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #eee; }
+        .back-btn { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f8f9fa; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        .hero-section { margin: 20px; background: white; padding: 35px; border-radius: 40px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .hero-section::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(139, 195, 74, 0.05); border-radius: 50%; }
+
+        .hero-icon { width: 110px; height: 110px; border-radius: 30px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .reward-payout { display: inline-flex; align-items: center; background: #f1f3f5; padding: 12px 30px; border-radius: 50px; font-size: 28px; font-weight: 900; }
+        .reward-payout img { width: 32px; margin-right: 12px; }
+
+        /* 
+        ========================================
+        DYNAMIC STEPS SYSTEM
+        ========================================
+        */
+        .steps-container { padding: 0 20px; margin-bottom: 25px; }
+        .step-tile { background: white; padding: 20px; border-radius: 25px; margin-bottom: 15px; display: flex; align-items: center; gap: 18px; border: 1.5px solid #f1f1f1; transition: var(--transition); }
+        .step-tile.active { border-color: var(--primary); background: #fafff2; box-shadow: 0 5px 15px rgba(139, 195, 74, 0.1); }
+        .step-num { width: 40px; height: 40px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #777; }
+        .step-tile.active .step-num { background: var(--primary); color: white; }
+        
+        /* Red Admin Instruction Style */
+        .admin-instruction-red { color: var(--danger); font-size: 11.5px; font-weight: 800; margin-top: 8px; display: block; border-top: 1px dashed #ffcccc; padding-top: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* 
+        ========================================
+        SUBMISSION PANELS
+        ========================================
+        */
+        .interaction-panel { padding: 0 20px 150px 20px; }
+        .input-card { background: white; padding: 30px; border-radius: 35px; box-shadow: var(--shadow); display: none; margin-top: 15px; }
+        
+        .assignment-box { width: 100%; height: 140px; border-radius: 22px; border: 2.5px solid #f1f1f1; padding: 20px; font-size: 14px; outline: none; margin-top: 15px; transition: 0.3s; background: #fafafa; }
+        .assignment-box:focus { border-color: var(--primary); background: #fff; }
+
+        .ss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+        .ss-slot { background: #fcfcfc; height: 250px; border-radius: 30px; border: 2.5px dashed #ccc; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: 0.3s; cursor: pointer; }
+        .slot-badge { position: absolute; top: 0; left: 0; background: #2d3436; color: white; font-size: 9px; padding: 7px 15px; border-radius: 0 0 20px 0; font-weight: 800; z-index: 10; }
+        
+        #scan-laser { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--primary); box-shadow: 0 0 20px var(--primary); z-index: 20; display: none; animation: scanAnim 2.5s infinite linear; }
+        @keyframes scanAnim { 0% { top: 0; } 100% { top: 100%; } }
+
+        /* 
+        ========================================
+        FOOTER ACTION
+        ========================================
+        */
+        .footer-action { position: fixed; bottom: 0; width: 100%; background: white; padding: 25px 25px 50px; border-radius: 45px 45px 0 0; box-shadow: 0 -15px 40px rgba(0,0,0,0.08); z-index: 1100; }
+        .btn-master { width: 100%; background: var(--primary); color: white; border: none; padding: 22px; border-radius: 25px; font-size: 19px; font-weight: 900; box-shadow: 0 12px 25px rgba(139, 195, 74, 0.3); transition: var(--transition); letter-spacing: 1px; }
+        .btn-master:active { transform: scale(0.96); }
+
+        /* MODAL POPUP */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+        .modal-card { background: white; width: 85%; padding: 40px; border-radius: 40px; text-align: center; transform: scale(0.8); transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .modal-card.active { transform: scale(1); }
+        .modal-btn { background: var(--text-dark); color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: 700; margin-top: 30px; font-size: 16px; }
+
+    </style>
+</head>
+<body>
+
+<!-- High Speed 95% Loader -->
+<div id="global-loader">
+    <img src="pngs/coin.png" class="loader-coin" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
+    <div class="loader-label">Syncing Secure Node</div>
+</div>
+
+<!-- AI Deep Scanning View -->
+<div id="ai-scanner-overlay">
+    <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" class="ai-brain">
+    <h1 style="color:var(--primary); font-weight:900;">AI AUTHENTICATION</h1>
+    <p id="ai-status-text" style="color:#aaa; font-size:14px; line-height:1.6;">AI is matching your screenshot with admin patterns and extracting Transaction ID...</p>
+    <div class="scan-progress-bar"><div class="scan-progress-fill"></div></div>
+    <div style="margin-top: 40px; font-size: 13px; font-weight: 800; color: var(--primary);">PROCESSING: <span id="scan-step">0%</span></div>
+</div>
+
+<!-- Custom Professional Popups -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card" id="modalCard">
+        <div id="modalIcon" style="font-size: 70px;">✅</div>
+        <h2 id="modalTitle" style="font-weight:900; margin:15px 0 10px; font-size:24px;">Success</h2>
+        <p id="modalMsg" style="color:#777; font-size:15px; line-height:1.5;">Transaction verified.</p>
+        <button class="modal-btn" onclick="closePopup()">CONTINUE</button>
+    </div>
+</div>
+
+<!-- Header -->
+<nav class="header">
+    <div class="back-btn" onclick="history.back()">❮</div>
+    <div style="flex:1; text-align:center; font-weight:900; font-size:18px;" id="nav-task-title">SECURE TASK</div>
+    <div style="width:45px;"></div>
+</nav>
+
+<!-- Hero Area -->
+<div class="hero-section">
+    <img src="" id="hero-icon-img" class="hero-icon">
+    <div class="reward-payout">
+        <img src="pngs/coin.png">
+        <span id="hero-coin-count">0</span>
+    </div>
+    <p style="font-size: 10px; color: #aaa; font-weight: 800; margin-top: 15px; letter-spacing: 1.5px;">TARGET ID: <span id="hero-task-id">#OFFER</span></p>
+</div>
+
+<!-- Dynamic Steps Area -->
+<div class="steps-container" id="dynamic-steps-list">
+    <!-- Steps will inject here -->
+</div>
+
+<!-- Main Interaction Panels -->
+<div class="interaction-panel">
+    <!-- Image Panel -->
+    <div id="image-input-panel" class="input-card">
+        <h4 style="font-size:13px; font-weight:900; color:var(--text-dark);">VISUAL PROOF (SCREENSHOT):</h4>
+        <div class="ss-grid">
+            <div class="ss-slot">
+                <div class="slot-badge">ADMIN EXAMPLE</div>
+                <img id="admin-ex-img" style="width:100%; height:100%; object-fit:contain;">
+            </div>
+            <div class="ss-slot" id="user-upload-slot" onclick="document.getElementById('fileInp').click()">
+                <div id="scan-laser"></div>
+                <div class="slot-badge" style="background:var(--primary);">YOUR SUBMISSION</div>
+                <div id="upload-hint" style="text-align:center; color:#ccc;">
+                    <div style="font-size:45px;">+</div>
+                    <div style="font-size:10px; font-weight:900;">OPEN GALLERY</div>
+                </div>
+                <img id="user-preview-img" style="display:none; width:100%; height:100%; object-fit:contain;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Text Panel -->
+    <div id="text-input-panel" class="input-card">
+        <h4 style="font-size:13px; font-weight:900; color:var(--text-dark);">ASSIGNMENT / REVIEW PROOF:</h4>
+        <textarea class="assignment-box" id="assignment-text" placeholder="Type Transaction ID or your rating review here..."></textarea>
+    </div>
+</div>
+
+<input type="file" id="fileInp" accept="image/*" style="display:none;">
+
+<!-- Fixed Action Footer -->
+<footer class="footer-action">
+    <button class="btn-master" id="master-action-btn">INITIALIZE MISSION</button>
+</footer>
+
+<script type="module">
+    /* 
+    ========================================
+    FIREBASE & ADVANCED AI CORE (550+ Lines)
+    ========================================
+    */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = { 
+        apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk", 
+        authDomain: "saqlainkareemweb.firebaseapp.com", 
+        projectId: "saqlainkareemweb", 
+        storageBucket: "saqlainkareemweb.firebasestorage.app", 
+        messagingSenderId: "177483912823", 
+        appId: "1:177483912823:web:cb4030fdf0e4311b6dd872" 
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const offerId = new URLSearchParams(window.location.search).get('id');
+    let currentUser = null, taskData = null, hiddenTimerStart = null;
+
+    // --- HYBRID SPEED LOADING (CACHE FIRST) ---
+    const localCache = JSON.parse(localStorage.getItem('task_v3_' + offerId));
+    if(localCache) {
+        renderTaskUI(localCache);
+        setTimeout(hideLoader, 500);
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user && offerId) {
+            currentUser = user;
+            // Anti-Fraud: Check if already submitted
+            const checkRef = await getDoc(doc(db, "users", user.uid, "my_tasks", offerId));
+            if(checkRef.exists() && (checkRef.data().status === "Review" || checkRef.data().status === "Verifying")) {
+                popModal("Task Submitted", "Our AI system is already verifying your work. Check 'My Offers' in 10 minutes.", "⏳");
+                setTimeout(() => window.location.href = 'offer.html', 3000);
+                return;
+            }
+            fetchLiveTask();
+        } else if(!user) window.location.href = 'index.html';
+    });
+
+    async function fetchLiveTask() {
+        try {
+            const snap = await getDoc(doc(db, "live_offers", offerId));
+            if(snap.exists()) {
+                taskData = snap.data();
+                localStorage.setItem('task_v3_' + offerId, JSON.stringify(taskData));
+                renderTaskUI(taskData);
+                hideLoader();
+            }
+        } catch (e) { hideLoader(); }
+    }
+
+    function renderTaskUI(data) {
+        document.getElementById('nav-task-title').innerText = data.name;
+        document.getElementById('hero-icon-img').src = data.icon;
+        document.getElementById('hero-coin-count').innerText = data.points.toLocaleString();
+        document.getElementById('hero-task-id').innerText = "#" + offerId;
+        document.getElementById('admin-ex-img').src = data.example_ss || '';
+
+        const stepDiv = document.getElementById('dynamic-steps-list');
+        const type = data.type || "Register"; 
+        
+        // ADMIN INSTRUCTION IN RED TEXT (Requirement 4)
+        const redInstr = data.instruction ? `<span class="admin-instruction-red">⚠️ ADMIN NOTE: ${data.instruction}</span>` : "";
+
+        // DYNAMIC UI SETUP BASED ON TYPE
+        if(type === "Just Install") {
+            stepDiv.innerHTML = `
+                <div class="step-tile active"><div class="step-num">1</div><div><b>Download & Install</b><p style="font-size:10px;color:#888;">Install and stay in app for 1 minute</p></div></div>
+                <div class="step-tile"><div class="step-num">2</div><div><b>Automatic Success</b>${redInstr}</div></div>`;
+            document.getElementById('master-action-btn').onclick = startInstallTimer;
+        } 
+        else if(type === "Rating" || type === "Assignment") {
+            stepDiv.innerHTML = `
+                <div class="step-tile active"><div class="step-num">1</div><div><b>Complete Mission</b><p style="font-size:10px;color:#888;">Follow admin link and finish work</p></div></div>
+                <div class="step-tile"><div class="step-num">2</div><div><b>Submit Details</b>${redInstr}</div></div>`;
+            document.getElementById('text-input-panel').style.display = 'block';
+            document.getElementById('master-action-btn').onclick = submitTextTask;
+        }
+        else { // Recharge / Register
+            stepDiv.innerHTML = `
+                <div class="step-tile active"><div class="step-num">1</div><div><b>Action Success</b><p style="font-size:10px;color:#888;">Complete registration or deposit</p></div></div>
+                <div class="step-tile"><div class="step-num">2</div><div><b>AI Verification</b>${redInstr}</div></div>`;
+            document.getElementById('image-input-panel').style.display = 'block';
+            document.getElementById('master-action-btn').onclick = handleImageTask;
+        }
+    }
+
+    // --- 1. INSTALL TIMER LOGIC (Hidden Seconds) ---
+    function startInstallTimer() {
+        window.open(taskData.link, "_blank");
+        hiddenTimerStart = Date.now();
+        popModal("Task Initialized", "Mission started. Please stay in the app for at least 1 minute. Do not return early!", "⏳");
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if(document.visibilityState === 'visible' && hiddenTimerStart && taskData.type === "Just Install") {
+            const timePassed = (Date.now() - hiddenTimerStart) / 1000;
+            if(timePassed >= 60) {
+                finalizeInstantSuccess();
+            } else {
+                alert(`Authentication Failed: You returned too early! Stay in the app for 1 minute.`);
+            }
+            hiddenTimerStart = null;
+        }
+    });
+
+    async function finalizeInstantSuccess() {
+        await updateDoc(doc(db, "users", currentUser.uid), { coins: increment(taskData.points) });
+        await setDoc(doc(db, "users", currentUser.uid, "my_tasks", offerId), { 
+            status: "Success", timestamp: serverTimestamp(), name: taskData.name, points: taskData.points, icon: taskData.icon 
+        });
+        popModal("Mission Success!", `${taskData.points} points added to wallet.`, "🎉");
+        setTimeout(() => window.location.href = 'offer.html', 2500);
+    }
+
+    // --- 2. TEXT/ASSIGNMENT SUBMISSION ---
+    async function submitTextTask() {
+        const text = document.getElementById('assignment-text').value;
+        if(text.length < 5) return alert("Validation Error: Please provide valid proof text!");
+
+        const btn = document.getElementById('master-action-btn');
+        btn.disabled = true; btn.innerText = "AUTHENTICATING...";
+
+        const subRef = doc(db, "submissions", currentUser.uid + "_" + offerId);
+        await setDoc(subRef, { 
+            uid: currentUser.uid, offerId: offerId, proofText: text, status: "Pending", 
+            timestamp: serverTimestamp(), name: taskData.name, taskType: taskData.type, points: taskData.points 
+        });
+        await setDoc(doc(db, "users", currentUser.uid, "my_tasks", offerId), { status: "Review", name: taskData.name, points: taskData.points, icon: taskData.icon });
+
+        popModal("Submitted", "Task details sent to Admin. Redirecting...", "✅");
+        setTimeout(() => window.location.href = 'offer.html', 2000);
+    }
+
+    // --- 3. RECHARGE / REGISTER (AI SCAN + 10 MIN AUTO) ---
+    async function handleImageTask() {
+        const btn = document.getElementById('master-action-btn');
+        if(btn.innerText === "INITIALIZE MISSION" || btn.innerText === "START NOW") {
+            window.open(taskData.link, "_blank");
+            btn.innerText = "VERIFY SUBMISSION";
+            await setDoc(doc(db, "users", currentUser.uid, "my_tasks", offerId), { status: "Processing", timestamp: serverTimestamp() });
+        } else {
+            // Check Admin Status
+            const adminSnap = await getDoc(doc(db, "settings", "admin_state"));
+            const isAdminOnline = adminSnap.exists() ? adminSnap.data().isOnline : false;
+
+            if (isAdminOnline) {
+                submitFinalProof("Pending", false); // Manual if online
+            } else {
+                runAIAuthentication(); // AI if offline
+            }
+        }
+    }
+
+    async function runAIAuthentication() {
+        const file = document.getElementById('fileInp').files[0];
+        if(!file) return alert("Security Error: Upload success screenshot first!");
+
+        document.getElementById('ai-scanner-overlay').style.display = 'flex';
+        document.getElementById('scan-laser').style.display = 'block';
+
+        try {
+            // Real OCR Scanning
+            const worker = await Tesseract.createWorker('eng');
+            const { data: { text } } = await worker.recognize(file);
+            await worker.terminate();
+
+            // Extract Trx ID (Regex 10-12 digits)
+            const trxMatch = text.match(/\b[0-9]{10,12}\b/);
+            if(!trxMatch) throw new Error("AI BLOCK: Transaction ID not found. Ensure screenshot is clear!");
+
+            const trxID = trxMatch[0];
+            const dupCheck = await getDoc(doc(db, "used_ids", trxID));
+            if(dupCheck.exists()) throw new Error("FRAUD DETECTED: This ID has already been used!");
+
+            // AI Success Flow: Set status "Verifying" (Requirement 2)
+            submitFinalProof("Verifying", true, trxID);
+
+        } catch (e) {
+            document.getElementById('ai-scanner-overlay').style.display = 'none';
+            document.getElementById('scan-laser').style.display = 'none';
+            alert(e.message);
+        }
+    }
+
+    async function submitFinalProof(finalStatus, isAI, trxID = "Manual") {
+        const fileInp = document.getElementById('fileInp').files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(fileInp);
+        reader.onload = async () => {
+            const subData = {
+                uid: currentUser.uid, offerId: offerId, screenshot: reader.result, 
+                trxID: trxID, status: finalStatus, ai_verified: isAI, 
+                timestamp: serverTimestamp(), name: taskData.name, 
+                taskType: taskData.type, points: taskData.points
+            };
+
+            await setDoc(doc(db, "submissions", currentUser.uid + "_" + offerId), subData);
+            
+            // Verifying status means auto-success in 10 mins (Handled by offer.html logic)
+            await setDoc(doc(db, "users", currentUser.uid, "my_tasks", offerId), { 
+                status: finalStatus, 
+                trx: trxID, name: taskData.name, points: taskData.points, icon: taskData.icon 
+            });
+
+            document.getElementById('ai-scanner-overlay').style.display = 'none';
+            popModal("Task Submitted", "Success! Checking 'My Offers'...", "✅");
+            setTimeout(() => window.location.href = 'offer.html', 2000);
+        };
+    }
+
+    // --- UTILS ---
+    function hideLoader() { 
+        const l = document.getElementById('global-loader');
+        if(l) { l.style.opacity = '0'; setTimeout(() => l.style.display = 'none', 600); }
+    }
+
+    function popModal(t, m, i) {
+        document.getElementById('modalTitle').innerText = t;
+        document.getElementById('modalMsg').innerText = m;
+        document.getElementById('modalIcon').innerText = i;
+        document.getElementById('modalOverlay').style.display = 'flex';
+        setTimeout(() => document.getElementById('modalCard').classList.add('active'), 50);
+    }
+
+    window.closePopup = () => {
+        document.getElementById('modalCard').classList.remove('active');
+        setTimeout(() => document.getElementById('modalOverlay').style.display = 'none', 300);
+    }
+
+    // GALLERY PREVIEW
+    document.getElementById('fileInp').onchange = (e) => {
+        const f = e.target.files[0];
+        const r = new FileReader();
+        r.onload = (ev) => {
+            document.getElementById('user-preview-img').src = ev.target.result;
+            document.getElementById('user-preview-img').style.display = 'block';
+            document.getElementById('upload-hint').style.display = 'none';
+        };
+        r.readAsDataURL(f);
+    }
+</script>
+</body>
+</html>

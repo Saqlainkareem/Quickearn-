@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- 
+    =========================================
+    PROJECT: Quick Earn - Cashout Page
+    VERSION: 2.0 (Enhanced UI/UX)
+    DESCRIPTION: Shop and Withdrawal Screen
+    =========================================
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quick Earn - Cashout</title>
+    
+    <!-- External Frameworks -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables for Consistency */
+        :root {
+            --dark-header: #2d2d3a;
+            --bg-color: #1a1c2c;
+            --coin-yellow: #ffeb3b;
+            --primary-green: #8bc34a;
+            --text-white: #ffffff;
+            --card-bg: #ffffff;
+        }
+
+        /* Global Reset */
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none;
+            outline: none;
+        }
+
+        /* Body Background and Padding */
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-white); 
+            margin: 0; 
+            padding-bottom: 120px; 
+            transition: background 0.3s ease;
+        }
+
+        /* Fixed Header Styles */
+        .header { 
+            background: var(--dark-header); 
+            padding: 10px 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            height: 70px; 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        /* Coin Balance Box */
+        .balance-box { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 700; 
+            font-size: 22px; 
+            color: var(--coin-yellow); 
+        }
+
+        .balance-box img { 
+            width: 32px; 
+            height: 32px;
+            object-fit: contain;
+        }
+
+        /* Shop Cards Container */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Individual Card Design */
+        .shop-card {
+            background: var(--card-bg); 
+            border-radius: 24px; 
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            border: 3px solid transparent; 
+            cursor: pointer;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Selected Card Visual Feedback */
+        .shop-card.selected {
+            border-color: var(--primary-green);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(139, 195, 74, 0.5);
+        }
+
+        /* Large Logo Settings */
+        .ep-logo { 
+            width: 90px; 
+            height: auto; 
+            margin-bottom: 12px;
+            pointer-events: none;
+        }
+
+        /* Currency Conversion Display */
+        .currency-info {
+            font-size: 14px; 
+            color: var(--coin-yellow);
+            font-weight: 500;
+        }
+
+        /* User Avatar Header */
+        .user-header-avatar {
+            width: 42px; 
+            height: 42px; 
+            background: #ff5722; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* Bottom Navigation Menu */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            height: 80px; 
+            background: white; 
+            border-top: 1px solid #ddd; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            padding-bottom: 12px; 
+            z-index: 1000; 
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-item { 
+            text-align: center; 
+            color: #999; 
+            font-size: 12px; 
+            font-weight: 600; 
+            text-decoration: none; 
+            width: 25%; 
+            transition: 0.2s;
+        }
+
+        .nav-icon { 
+            font-size: 26px; 
+            display: block; 
+            margin-bottom: 3px; 
+        }
+
+        .nav-item.active { 
+            color: #4CAF50; 
+        }
+
+        /* Modal / Popup Styling */
+        #customModal {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0,0,0,0.85); 
+            display: none; 
+            align-items: center;
+            justify-content: center; 
+            z-index: 9999; 
+            backdrop-filter: blur(6px);
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #ffffff; 
+            color: #222; 
+            padding: 30px; 
+            border-radius: 28px;
+            width: 100%; 
+            max-width: 380px; 
+            text-align: center; 
+            animation: bounceIn 0.4s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .modal-btn {
+            background: var(--primary-green); 
+            color: white; 
+            padding: 12px 35px;
+            border-radius: 50px; 
+            margin-top: 25px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: inline-block;
+            transition: 0.2s;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Withdraw History List Styling */
+        .history-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Custom Elegant Notification Popup -->
+<div id="customModal">
+    <div class="modal-content">
+        <div id="modalIcon" style="font-size: 60px; margin-bottom: 15px;">⚠️</div>
+        <h3 id="modalTitle" style="font-size: 20px; font-weight: 700;">Alert</h3>
+        <p id="modalMsg" style="font-size: 15px; color: #555; margin-top: 12px; line-height: 1.5;"></p>
+        <div class="modal-btn" onclick="closeModal()">Understood</div>
+    </div>
+</div>
+
+<!-- Main Application Header -->
+<div class="header">
+    <div class="balance-box">
+        <!-- Coin image linked to your specific path -->
+        <img src="pngs/coin.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
+        <span id="userCoins">0</span>
+    </div>
+    <div class="flex items-center gap-3">
+       <span class="currency-info">Rs <span id="rsBalance">0.00</span></span>
+       <div class="user-header-avatar" id="userInitial">?</div>
+    </div>
+</div>
+
+<!-- Scrollable Content Area -->
+<div class="pt-24 px-5 max-w-md mx-auto">
+    
+    <!-- Title Section -->
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold flex items-center gap-3">
+            <img src="easypaisa.png" style="height: 24px;" onerror="this.style.display='none'">
+            Redeem Your Cash
+        </h2>
+    </div>
+
+    <!-- Options Selection Grid -->
+    <div class="shop-grid">
+        
+        <!-- Reward Card: Rs 20 -->
+        <div class="shop-card" data-amt="20" data-coins="30000" onclick="selectCard(this)">
+            <img src="easypaisa.png" class="ep-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Easypaisa_logo.png/220px-Easypaisa_logo.png'">
+            <span class="text-2xl font-black text-gray-800">Rs 20</span>
+            <div class="mt-3 flex items-center gap-1.5 text-orange-600 font-bold">
+                <img src="pngs/coin.png" style="width:18px;"> 30,000
+            </div>
+        </div>
+
+        <!-- Reward Card: Rs 51 -->
+        <div class="shop-card" data-amt="51" data-coins="60000" onclick="selectCard(this)">
+            <img src="easypaisa.png" class="ep-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Easypaisa_logo.png/220px-Easypaisa_logo.png'">
+            <span class="text-2xl font-black text-gray-800">Rs 51</span>
+            <div class="mt-3 flex items-center gap-1.5 text-orange-600 font-bold">
+                <img src="pngs/coin.png" style="width:18px;"> 60,000
+            </div>
+        </div>
+
+        <!-- Reward Card: Rs 100 -->
+        <div class="shop-card" data-amt="100" data-coins="100000" onclick="selectCard(this)">
+            <img src="easypaisa.png" class="ep-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Easypaisa_logo.png/220px-Easypaisa_logo.png'">
+            <span class="text-2xl font-black text-gray-800">Rs 100</span>
+            <div class="mt-3 flex items-center gap-1.5 text-orange-600 font-bold">
+                <img src="pngs/coin.png" style="width:18px;"> 100,000
+            </div>
+        </div>
+
+        <!-- Reward Card: Rs 200 -->
+        <div class="shop-card" data-amt="200" data-coins="190000" onclick="selectCard(this)">
+            <img src="easypaisa.png" class="ep-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Easypaisa_logo.png/220px-Easypaisa_logo.png'">
+            <span class="text-2xl font-black text-gray-800">Rs 200</span>
+            <div class="mt-3 flex items-center gap-1.5 text-orange-600 font-bold">
+                <img src="pngs/coin.png" style="width:18px;"> 190,000
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Final Action Button -->
+    <button onclick="handleRedeem()" class="w-full bg-green-500 h-16 rounded-3xl mt-10 text-xl font-bold shadow-xl hover:bg-green-600 active:scale-95 transition-all text-white">
+        Redeem Now
+    </button>
+
+    <!-- Withdrawal History Section -->
+    <div class="mt-12">
+        <div class="flex items-center justify-between mb-5 border-b border-gray-700 pb-3">
+            <h3 class="text-lg font-bold">Transaction History</h3>
+            <span class="text-xl">📊</span>
+        </div>
+        
+        <!-- Live Data Container -->
+        <div id="allWithdraws" class="space-y-4">
+            <p class="text-center text-gray-500 py-10 italic">Initializing history engine...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Fixed Navigation Footer -->
+<div class="bottom-nav">
+    <a href="main.html" class="nav-item">
+        <span class="nav-icon">🎁</span>Offer
+    </a>
+    <a href="offer.html" class="nav-item">
+        <span class="nav-icon">📋</span>My offers
+    </a>
+    <a href="refer.html" class="nav-item">
+        <span class="nav-icon">👥</span>Refer
+    </a>
+    <a href="shop.html" class="nav-item active">
+        <span class="nav-icon">💰</span>Cashout
+    </a>
+</div>
+
+<!-- Firebase and App Scripting Logic -->
+<script type="module">
+    // Importing Firebase Libraries from CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+    import { getFirestore, doc, onSnapshot, collection, query, orderBy } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+    // Firebase Credentials (As provided in your source)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk",
+        authDomain: "saqlainkareemweb.firebaseapp.com",
+        projectId: "saqlainkareemweb",
+        storageBucket: "saqlainkareemweb.firebasestorage.app",
+        messagingSenderId: "177483912823",
+        appId: "1:177483912823:web:cb4030fdf0e4311b6dd872"
+    };
+
+    // Initialization of Firebase Services
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Reactive State Variables
+    let userCoins = 0;
+    let selectedAmt = 0;
+    let selectedCoins = 0;
+
+    /**
+     * Authentication Listener
+     * Handles user session and data synchronization
+     */
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            // Update UI with user identifier
+            const initial = user.email ? user.email[0].toUpperCase() : "?";
+            document.getElementById('userInitial').innerText = initial;
+            
+            // Sync Real-time Coin Balance
+            onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+                if(snapshot.exists()){
+                    userCoins = snapshot.data().coins || 0;
+                    document.getElementById('userCoins').innerText = userCoins.toLocaleString();
+                    document.getElementById('rsBalance').innerText = (userCoins / 1000).toFixed(2);
+                }
+            }, error => console.error("Balance Error:", error));
+
+            // Sync Real-time Withdrawal Logs
+            const historyRef = collection(db, "users", user.uid, "withdrawals");
+            const historyQuery = query(historyRef, orderBy("time", "desc"));
+            
+            onSnapshot(historyQuery, (snapshot) => {
+                const historyContainer = document.getElementById('allWithdraws');
+                if(snapshot.empty) {
+                    historyContainer.innerHTML = '<p class="text-center text-gray-500 py-10">No withdrawal records found.</p>';
+                    return;
+                }
+
+                let historyHtml = "";
+                snapshot.forEach(documentSnap => {
+                    const data = documentSnap.data();
+                    const timestamp = data.time ? new Date(data.time.seconds * 1000).toLocaleDateString() : "Processing...";
+                    const statusClass = data.status === "Success" ? "text-green-400" : "text-orange-400";
+                    
+                    historyHtml += `
+                        <div class="history-card">
+                            <div>
+                                <div class="font-bold text-white text-base">Rs ${data.amount}</div>
+                                <div class="text-[11px] text-gray-400 mt-1">${timestamp}</div>
+                            </div>
+                            <div class="text-xs font-bold uppercase tracking-wider ${statusClass}">
+                                ${data.status || 'Pending'}
+                            </div>
+                        </div>`;
+                });
+                historyContainer.innerHTML = historyHtml;
+            }, error => {
+                console.error("History Load Error:", error);
+            });
+
+        } else {
+            // Unauthenticated users are sent back to login
+            window.location.href = "index.html";
+        }
+    });
+
+    /**
+     * Card Selection Logic
+     * Highlights the selected withdrawal amount
+     */
+    window.selectCard = function(element) {
+        // Clear previous selections
+        document.querySelectorAll('.shop-card').forEach(card => card.classList.remove('selected'));
+        
+        // Apply new selection
+        element.classList.add('selected');
+        selectedAmt = parseInt(element.dataset.amt);
+        selectedCoins = parseInt(element.dataset.coins);
+    }
+
+    /**
+     * Beautiful Modal Management
+     * Custom alerts for better user experience
+     */
+    window.showPopup = function(title, message, emoji = "⚠️") {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMsg').innerText = message;
+        document.getElementById('modalIcon').innerText = emoji;
+        document.getElementById('customModal').style.display = "flex";
+    }
+
+    window.closeModal = function() {
+        document.getElementById('customModal').style.display = "none";
+    }
+
+    /**
+     * Cashout Execution Logic
+     * Validates points before proceeding to payment screen
+     */
+    window.handleRedeem = function() {
+        // Validation 1: Check if any card is selected
+        if (selectedAmt === 0) {
+            showPopup("Selection Missing", "Kindly choose a withdrawal amount from the options above.", "👆");
+            return;
+        }
+
+        // Validation 2: Check if user has enough balance
+        if (userCoins < selectedCoins) {
+            showPopup("Insufficient Coins", "Low amount, please complete the tasks to earn more coins.", "📉");
+        } else {
+            // Success: Store selection and navigate to input page
+            localStorage.setItem('selAmt', selectedAmt);
+            localStorage.setItem('selCoins', selectedCoins);
+            window.location.href = "withdraw.html";
+        }
+    }
+
+</script>
+
+</body>
+<!-- 
+    Developed with precision for Quick Earn.
+    All rights reserved.
+-->
+</html>

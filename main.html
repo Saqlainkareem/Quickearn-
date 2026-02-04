@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quick Earn - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-header: #2d2d3a;
+            --bg: #f4f6f8;
+            --primary-orange: #ff9800;
+            --earn-green: #8bc34a;
+            --red-theme: #e74c3c;
+            --coin-yellow: #ffeb3b;
+        }
+
+        /* Essential Reset and Anti-Zoom */
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            font-family: 'Poppins', sans-serif; 
+            user-select: none; 
+            touch-action: manipulation; 
+        }
+        
+        body, html { 
+            margin: 0; padding: 0; 
+            background-color: var(--bg); 
+            height: 100%; width: 100%; 
+            overflow: hidden; 
+        }
+
+        /* Professional PTR (Pull to Refresh) Loader */
+        #ptr-box { 
+            width: 100%; 
+            height: 0; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: transparent; 
+            transition: height 0.3s ease; 
+        }
+        .ptr-spinner { 
+            width: 30px; height: 30px; 
+            border: 3.5px solid #eee; 
+            border-top: 3.5px solid var(--earn-green); 
+            border-radius: 50%; 
+            display: none;
+        }
+        .ptr-active .ptr-spinner { display: block; animation: spinRefresh 0.8s linear infinite; }
+        @keyframes spinRefresh { 100% { transform: rotate(360deg); } }
+
+        /* Professional Header */
+        .header { 
+            background: var(--dark-header); 
+            color: white; 
+            padding: 10px 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            height: 70px; 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .balance-box { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 21px; color: var(--coin-yellow); }
+        .balance-box img { width: 30px; height: 30px; }
+        .rs-val { color: var(--coin-yellow); font-size: 14px; opacity: 0.85; font-weight: 500; margin-left: 2px; } 
+        
+        .user-avatar { 
+            width: 42px; height: 42px; 
+            background: var(--red-theme); 
+            color: white; border-radius: 50%; 
+            display: flex; align-items: center; 
+            justify-content: center; font-weight: bold; 
+            border: 2px solid rgba(255,255,255,0.6); 
+            font-size: 18px; cursor: pointer;
+        }
+
+        /* Filter Controls */
+        .filters { 
+            display: flex; gap: 10px; 
+            padding: 12px 15px; 
+            background: white; 
+            border-top: 1px solid #f0f0f0; 
+            position: relative; 
+            z-index: 500; 
+            margin-top: 70px;
+        }
+        .filter-btn { 
+            background: #f9f9f9; border: 1px solid #ddd; 
+            padding: 9px 12px; border-radius: 12px; 
+            font-size: 12.5px; font-weight: 600; color: #444; 
+            display: flex; align-items: center; gap: 5px; cursor: pointer; 
+        }
+        
+        /* Dropdown Menus */
+        .dropdown-menu { 
+            position: absolute; top: 55px; 
+            width: 190px; background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+            display: none; z-index: 2000; overflow: hidden; 
+            border: 1px solid #eee;
+        }
+        .dropdown-menu.active { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(-5px); } to { opacity:1; transform: translateY(0); } }
+        
+        .menu-item { padding: 13px 15px; font-size: 13px; color: #666; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f8f8f8; }
+        .menu-item:active { background: #f0f0f0; }
+        .menu-item.selected { color: var(--earn-green); font-weight: 700; background: #fafff2; }
+
+        /* Offer Cards Scrollable Area */
+        .content { height: calc(100vh - 70px); overflow-y: auto; padding-bottom: 130px; -webkit-overflow-scrolling: touch; }
+
+        /* Card Design */
+        .offer-card { 
+            background: white; margin: 12px 15px; 
+            border-radius: 22px; padding: 16px; 
+            display: flex; position: relative; 
+            box-shadow: 0 3px 12px rgba(0,0,0,0.03); 
+            border: 1px solid #fff; cursor: pointer; 
+        }
+        .app-icon { 
+            width: 65px; height: 65px; 
+            border-radius: 16px; object-fit: cover; 
+            background: #eee; border: 1px solid #f0f0f0;
+        }
+        .card-details { flex-grow: 1; margin-left: 14px; overflow: hidden; }
+        .app-name { 
+            font-size: 15px; font-weight: 700; 
+            color: #333; margin-bottom: 3px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        
+        .reward-info { 
+            display: flex; align-items: center; 
+            gap: 4px; margin-top: 2px;
+        }
+        .reward-info img { width: 19px; }
+        .reward-info span.pts { 
+            font-size: 17px; 
+            font-weight: 800; 
+            color: #2d2d3a; 
+        }
+
+        .rs-equiv-badge { 
+            font-size: 9.5px; 
+            font-weight: 700;
+            color: #fbc02d; 
+            border: 0.8px solid #fbc02d;
+            padding: 1px 5px;
+            border-radius: 4px;
+            margin-left: 4px;
+            text-transform: uppercase;
+            background: rgba(251, 192, 45, 0.04);
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+        .user-stats { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #999; font-weight: 500; }
+        
+        .avatar-stack { display: flex; align-items: center; margin-right: 2px; }
+        .avatar-stack img { 
+            width: 18px; height: 18px; border-radius: 50%; 
+            border: 1.5px solid white; margin-left: -7px; 
+        }
+        .avatar-stack img:first-child { margin-left: 0; }
+
+        .time-est { font-size: 12px; font-weight: 600; color: #444; display: flex; align-items: center; gap: 4px; }
+
+        .earn-btn { 
+            background: var(--earn-green); 
+            color: white; padding: 9px 20px; 
+            border-radius: 18px; font-weight: 800; 
+            font-size: 14px; position: absolute; 
+            right: 15px; top: 40px; 
+            box-shadow: 0 4px 10px rgba(139, 195, 74, 0.3); 
+        }
+
+        /* Professional Bottom Nav */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; 
+            height: 78px; background: white; 
+            border-top: 1px solid #eee; 
+            display: flex; justify-content: space-around; 
+            align-items: center; padding-bottom: 10px; 
+            z-index: 1000; 
+        }
+        .nav-item { text-align: center; color: #bbb; font-size: 11px; font-weight: 600; text-decoration: none; width: 25%; }
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 2px; }
+        .nav-item.active { color: #4CAF50; }
+
+        /* NEW: Mystery Box & Modals & Coin Anim Styles */
+        #mystery-box {
+            position: fixed; bottom: 95px; right: 20px;
+            width: 65px; height: 65px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(255, 87, 34, 0.4);
+            border: 3px solid #fff; z-index: 999;
+            animation: bounceGift 2s infinite; cursor: pointer;
+        }
+        @keyframes bounceGift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        
+        .custom-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 3000;
+            display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .custom-modal {
+            background: #fff; width: 85%; padding: 30px; border-radius: 30px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: scale(0.7); transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .custom-modal.active { transform: scale(1); }
+        .custom-modal h2 { margin: 15px 0 10px; font-weight: 800; color: #333; }
+        .custom-modal p { color: #666; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .custom-modal button { 
+            background: var(--dark-header); color: #fff; border: none;
+            padding: 12px 30px; border-radius: 15px; font-weight: 700; width: 100%;
+        }
+
+        .flying-coin-img {
+            position: fixed; width: 30px; height: 30px; z-index: 4000;
+            pointer-events: none; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.12); z-index: 400; display: none; 
+            backdrop-filter: blur(1px);
+        }
+    </style>
+</head>
+<body>
+
+<div id="overlay"></div>
+
+<!-- Custom Popups -->
+<div class="custom-modal-overlay" id="modalOverlay">
+    <div class="custom-modal" id="modalBox">
+        <div id="modalIcon" style="font-size: 60px;">🎁</div>
+        <h2 id="modalTitle">Awesome!</h2>
+        <p id="modalMsg">You earned rewards.</p>
+        <button onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<!-- App Header -->
+<div class="header">
+    <div class="balance-box" id="balanceDisplay">
+        <img src="pngs/coin.png" id="coinTarget" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
+        <span id="userCoins">0</span>
+        <span class="rs-val">≈ Rs<span id="rsBalance">0.00</span></span>
+    </div>
+    <div class="user-avatar" id="userInitial" onclick="window.location.href='me.html'">?</div>
+</div>
+
+<div class="content" id="scroll-area">
+    <div id="ptr-box"><div class="ptr-spinner"></div></div>
+
+    <!-- Dropdown Filters -->
+    <div class="filters">
+        <div class="filter-btn" id="typeBtn">▦ All Types ▾</div>
+        <div class="filter-btn" id="tagBtn" style="margin-left:auto; min-width: 120px;">🏷 All Tags ▾</div>
+
+        <div class="dropdown-menu" id="typeMenu" style="left: 15px;">
+            <div class="menu-item selected" data-val="All">All Types</div>
+            <div class="menu-item" data-val="Register & Use">Register & Use</div>
+            <div class="menu-item" data-val="Install & Play">Install & Play</div>
+            <div class="menu-item" data-val="Casino">Casino</div>
+            <div class="menu-item" data-val="Game">Game</div>
+        </div>
+
+        <div class="dropdown-menu" id="tagMenu" style="right: 15px;">
+            <div class="menu-item selected" data-val="All">All Tags</div>
+            <div class="menu-item" data-val="Hot">Hot</div>
+            <div class="menu-item" data-val="New">New</div>
+            <div class="menu-item" data-val="High Reward">High Reward</div>
+        </div>
+    </div>
+
+    <div id="offerList"></div>
+</div>
+
+<!-- Mystery Box -->
+<div id="mystery-box" onclick="handleMysteryClaim()">
+    <span style="font-size: 32px;">🎁</span>
+</div>
+
+<!-- Bottom Menu -->
+<div class="bottom-nav">
+    <a href="main.html" class="nav-item active"><span class="nav-icon">🎁</span>Offer</a>
+    <a href="offer.html" class="nav-item"><span class="nav-icon">📋</span>My offers</a>
+    <a href="refer.html" class="nav-item"><span class="nav-icon">👥</span>Refer</a>
+    <a href="shop.html" class="nav-item"><span class="nav-icon">💰</span>Cashout</a>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk",
+        authDomain: "saqlainkareemweb.firebaseapp.com",
+        projectId: "saqlainkareemweb",
+        storageBucket: "saqlainkareemweb.firebasestorage.app",
+        messagingSenderId: "177483912823",
+        appId: "1:177483912823:web:cb4030fdf0e4311b6dd872"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentType = "All", currentTag = "All", startedTaskIds = [], currentUid = null;
+    // Load offers from local storage immediately for speed
+    let allOffers = JSON.parse(localStorage.getItem('cached_offers')) || [];
+
+    // Pre-render from cache
+    renderOffers();
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUid = user.uid;
+            document.getElementById('userInitial').innerText = (user.email[0]).toUpperCase();
+            loadUserData(user.uid);
+            
+            onSnapshot(collection(db, "users", user.uid, "my_tasks"), (snapshot) => {
+                startedTaskIds = snapshot.docs.map(docSnap => docSnap.id);
+                renderOffers();
+            });
+
+            loadOffers();
+        } else { window.location.href = "index.html"; }
+    });
+
+    const typeBtn = document.getElementById('typeBtn'), tagBtn = document.getElementById('tagBtn'), 
+          typeMenu = document.getElementById('typeMenu'), tagMenu = document.getElementById('tagMenu'), 
+          overlay = document.getElementById('overlay');
+
+    function closeMenus() { typeMenu.classList.remove('active'); tagMenu.classList.remove('active'); overlay.style.display = 'none'; }
+    typeBtn.onclick = () => { typeMenu.classList.toggle('active'); overlay.style.display = 'block'; }
+    tagBtn.onclick = () => { tagMenu.classList.toggle('active'); overlay.style.display = 'block'; }
+    overlay.onclick = closeMenus;
+
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.onclick = function() {
+            const val = this.getAttribute('data-val');
+            if(this.parentElement.id === "typeMenu") { currentType = val; typeBtn.innerHTML = `▦ ${this.innerText} ▾`; }
+            else { currentTag = val; tagBtn.innerHTML = `🏷 ${this.innerText} ▾`; }
+            closeMenus(); renderOffers();
+        };
+    });
+
+    function loadUserData(uid) {
+        onSnapshot(doc(db, "users", uid), (d) => {
+            if(d.exists()) {
+                const coins = d.data().coins || 0;
+                document.getElementById('userCoins').innerText = coins.toLocaleString();
+                document.getElementById('rsBalance').innerText = (coins / 1000).toFixed(2);
+            }
+        });
+    }
+
+    function loadOffers() {
+        onSnapshot(collection(db, "live_offers"), (snapshot) => {
+            allOffers = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+            // Save to cache
+            localStorage.setItem('cached_offers', JSON.stringify(allOffers));
+            renderOffers();
+        });
+    }
+
+    function renderOffers() {
+        const list = document.getElementById('offerList');
+        const clickHistory = JSON.parse(localStorage.getItem('task_click_times')) || {};
+        const now = Date.now();
+
+        // Filter: Started tasks OR tasks clicked in last 3 hours
+        const filtered = allOffers.filter(off => {
+            const isStarted = startedTaskIds.includes(off.id);
+            const isInCooldown = clickHistory[off.id] && (now - clickHistory[off.id] < 3 * 60 * 60 * 1000);
+            const typeM = currentType === "All" || off.type === currentType;
+            const tagM = currentTag === "All" || off.tag === currentTag;
+            return !isStarted && !isInCooldown && typeM && tagM; 
+        }).reverse(); // Reverse so newest is at the top
+
+        if(filtered.length === 0) {
+            list.innerHTML = `<p style="text-align:center; color:#999; margin-top:40px;">No offers found in this category.</p>`;
+            return;
+        }
+
+        list.innerHTML = filtered.map(data => {
+            const seed = data.id.length;
+            const liveU = (data.userCount || 1800) + Math.floor(Math.random() * 200);
+            return `
+            <div class="offer-card" onclick="handleTaskStart('${data.id}')">
+                <img src="${data.icon || 'pngs/coin.png'}" class="app-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
+                <div class="card-details">
+                    <div class="app-name">${data.name}</div>
+                    <div class="reward-info">
+                        <img src="pngs/coin.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
+                        <span class="pts">${data.points.toLocaleString()}</span>
+                        <div class="rs-equiv-badge">Rs ${(data.points/1000).toFixed(2)}</div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="user-stats">
+                            <div class="avatar-stack">
+                                <img src="https://i.pravatar.cc/100?u=${seed+1}">
+                                <img src="https://i.pravatar.cc/100?u=${seed+2}">
+                            </div>
+                            ${liveU.toLocaleString()} active
+                        </div>
+                        <div class="time-est">🕒 ~${data.time || '3'}m</div>
+                    </div>
+                </div>
+                <div class="earn-btn">Earn</div>
+            </div>`;
+        }).join('');
+    }
+
+    window.handleTaskStart = (id) => {
+        // Save click time for 3-hour recycle logic
+        const clickHistory = JSON.parse(localStorage.getItem('task_click_times')) || {};
+        clickHistory[id] = Date.now();
+        localStorage.setItem('task_click_times', JSON.stringify(clickHistory));
+        window.location.href = `details.html?id=${id}`;
+    };
+
+    // Mystery Box Logic
+    window.handleMysteryClaim = async () => {
+        const today = new Date().toDateString();
+        let boxData = JSON.parse(localStorage.getItem('mystery_box_log')) || { date: today, count: 0 };
+        
+        // Reset count if it's a new day
+        if (boxData.date !== today) { boxData = { date: today, count: 0 }; }
+
+        if (boxData.count >= 2) {
+            showModal("Limit Reached", "Please come tomorrow and download the Game and Get more reward", "⌛");
+            return;
+        }
+
+        const rewardValue = Math.floor(Math.random() * 50) + 10;
+        if(currentUid) {
+            await updateDoc(doc(db, "users", currentUid), { coins: increment(rewardValue) });
+            boxData.count++;
+            localStorage.setItem('mystery_box_log', JSON.stringify(boxData));
+            
+            triggerCoinAnimation();
+            showModal("Congrats!", `You received ${rewardValue} coins from Mystery Box!`, "🎁");
+        }
+    };
+
+    function triggerCoinAnimation() {
+        const boxPos = document.getElementById('mystery-box').getBoundingClientRect();
+        const targetPos = document.getElementById('coinTarget').getBoundingClientRect();
+
+        for(let i=0; i<8; i++) {
+            setTimeout(() => {
+                const coin = document.createElement('img');
+                coin.src = document.getElementById('coinTarget').src;
+                coin.className = 'flying-coin-img';
+                coin.style.left = (boxPos.left + 15) + 'px';
+                coin.style.top = (boxPos.top + 15) + 'px';
+                document.body.appendChild(coin);
+
+                setTimeout(() => {
+                    coin.style.left = targetPos.left + 'px';
+                    coin.style.top = targetPos.top + 'px';
+                    coin.style.transform = 'scale(0.5)';
+                    coin.style.opacity = '0';
+                }, 50);
+
+                setTimeout(() => coin.remove(), 900);
+            }, i * 120);
+        }
+    }
+
+    function showModal(title, msg, icon) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMsg').innerText = msg;
+        document.getElementById('modalIcon').innerText = icon;
+        document.getElementById('modalOverlay').style.display = 'flex';
+        setTimeout(() => document.getElementById('modalBox').classList.add('active'), 10);
+    }
+
+    window.closeModal = () => {
+        document.getElementById('modalBox').classList.remove('active');
+        setTimeout(() => document.getElementById('modalOverlay').style.display = 'none', 300);
+    };
+
+    // Pull to Refresh Logic
+    let startY = 0;
+    const scrollArea = document.getElementById('scroll-area'), ptrBox = document.getElementById('ptr-box');
+    scrollArea.ontouchstart = (e) => { if (scrollArea.scrollTop === 0) startY = e.touches[0].pageY; };
+    scrollArea.ontouchmove = (e) => {
+        const pull = e.touches[0].pageY - startY;
+        if (scrollArea.scrollTop === 0 && pull > 0) {
+            const h = Math.min(pull * 0.4, 75); ptrBox.style.height = h + 'px';
+            ptrBox.classList.toggle('ptr-active', h > 55);
+        }
+    };
+    scrollArea.ontouchend = () => {
+        if (ptrBox.clientHeight > 55) {
+            ptrBox.style.height = '55px'; ptrBox.classList.add('ptr-active');
+            setTimeout(() => location.reload(), 1200);
+        } else ptrBox.style.height = '0px';
+    };
+</script>
+</body>
+</html>

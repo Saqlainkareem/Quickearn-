@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Quick Earn - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root{ --green:#2ecc71; --dark:#2c3e50; --bg:#f9f9f9; }
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body{ background:var(--bg); color:var(--dark); overflow:hidden; height: 100vh; }
+
+/* ================= LOADER ================= */
+#appLoader {
+    position: fixed; top:0; left:0; width:100%; height:100%; 
+    background:#fff; display:flex; flex-direction:column; 
+    justify-content:center; align-items:center; z-index:9999;
+}
+.loader-icon {
+    width: 70px; height: 70px; background: var(--green);
+    border-radius: 22px; display: flex; align-items: center;
+    justify-content:center; font-size: 40px; color: #fff;
+    animation: pulse 1.5s infinite; box-shadow: 0 10px 20px rgba(46,204,113,0.3);
+}
+@keyframes pulse {
+    0% { transform: scale(0.95); }
+    70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(46,204,113,0); }
+    100% { transform: scale(0.95); }
+}
+.loader-text { margin-top: 15px; font-weight: 800; font-size: 22px; color: var(--dark); }
+.loader-text span { color: var(--green); }
+
+/* Login UI */
+.login-container { 
+    height: 100vh; display: flex; flex-direction: column; 
+    justify-content: center; align-items: center; padding: 30px;
+    background: #fff;
+}
+.welcome-img { width: 150px; margin-bottom: 20px; }
+.google-btn {
+    width: 100%; max-width: 320px; padding: 16px; border-radius: 18px;
+    border: 1px solid #eee; background: #fff; display: flex;
+    align-items: center; justify-content: center; gap: 12px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    transition: 0.3s;
+}
+.google-btn:active { transform: scale(0.96); }
+</style>
+</head>
+<body>
+
+<div id="appLoader">
+    <div class="loader-icon">$</div>
+    <div class="loader-text">Quick<span>Earn</span></div>
+</div>
+
+<div class="login-container">
+    <div style="text-align:center; margin-bottom: 40px;">
+        <div class="loader-icon" style="animation:none; margin:auto">$</div>
+        <h1 style="margin-top:15px; font-size: 32px;">Quick<span>Earn</span></h1>
+        <p style="color:#888; font-size: 14px;">The fastest way to earn rewards</p>
+    </div>
+
+    <button class="google-btn" id="loginBtn">
+        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="24">
+        Continue with Google
+    </button>
+
+    <div style="position: absolute; bottom: 30px; text-align: center;">
+        <p style="font-size:12px; color:#bbb; letter-spacing: 1px;">POWERED BY AI SECURITY</p>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk",
+    authDomain: "saqlainkareemweb.firebaseapp.com",
+    projectId: "saqlainkareemweb",
+    storageBucket: "saqlainkareemweb.firebasestorage.app",
+    messagingSenderId: "177483912823",
+    appId: "1:177483912823:web:cb4030fdf0e4311b6dd872"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+// Device ID Logic (Multi-Account Protection)
+const getDeviceID = () => {
+    let id = localStorage.getItem("u_device_id") || "dev_" + Math.random().toString(36).substr(2, 12);
+    localStorage.setItem("u_device_id", id);
+    return id;
+};
+
+// ================= AUTO-REDIRECT LOGIC =================
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // Check if user exists in Firestore
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        if (snap.exists()) {
+            // OLD USER: Save to cache and redirect to main
+            localStorage.setItem('user_bal_cache', snap.data().coins);
+            window.location.href = "main.html"; // Yahan redirect hoga
+        } else {
+            // New user signed in but doc not created yet, 
+            // the login button click handler will handle the rest.
+            document.getElementById("appLoader").style.display = "none";
+        }
+    } else {
+        // No user, show login UI
+        document.getElementById("appLoader").style.display = "none";
+    }
+});
+
+// ================= LOGIN / SIGNUP ACTION =================
+document.getElementById("loginBtn").onclick = async () => {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        document.getElementById("appLoader").style.display = "flex";
+        
+        const user = result.user;
+        const dId = getDeviceID();
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        if (!snap.exists()) {
+            // 1. CHECK IF DEVICE ALREADY HAS AN ACCOUNT
+            const q = query(collection(db, "users"), where("deviceId", "==", dId));
+            const qs = await getDocs(q);
+            
+            if (!qs.empty) {
+                alert("Security Alert: Another account is already linked to this device.");
+                auth.signOut();
+                location.reload();
+                return;
+            }
+
+            // 2. NEW SIGNUP: Create Data
+            const userData = { 
+                uid: user.uid, 
+                name: user.displayName, 
+                email: user.email, 
+                coins: 50, // Welcome Bonus
+                deviceId: dId,
+                joinedAt: serverTimestamp()
+            };
+            await setDoc(userRef, userData);
+            localStorage.setItem('user_bal_cache', 50);
+            window.location.href = "main.html";
+        } else {
+            // 3. EXISTING LOGIN: Just redirect
+            localStorage.setItem('user_bal_cache', snap.data().coins);
+            window.location.href = "main.html";
+        }
+    } catch (e) {
+        alert("Login Failed: " + e.message);
+        document.getElementById("appLoader").style.display = "none";
+    }
+};
+</script>
+</body>
+</html>

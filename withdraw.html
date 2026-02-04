@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- 
+    =========================================
+    PROJECT: Quick Earn - Withdrawal System
+    PAGE: withdraw.html
+    FUNCTION: Process payouts and deduct coins
+    =========================================
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cashout - Quick Earn</title>
+    
+    <!-- External Resources -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-green: #8cc63f;
+            --bg-white: #ffffff;
+            --text-dark: #333333;
+            --light-gray: #f2f2f2;
+            --coin-gold: #FFD700;
+        }
+
+        /* Essential Reset */
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header Section --- */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .back-icon {
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .back-icon:active { background: #eee; }
+        .title {
+            font-size: 18px;
+            font-weight: 700;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 40px; /* To center title perfectly */
+        }
+
+        /* --- Info Rows --- */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .info-row .label { color: #777; }
+        .info-row .value { font-weight: 700; color: #000; }
+
+        .coin-value {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .coin-icon {
+            width: 22px;
+            height: 22px;
+            background-color: var(--coin-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            font-weight: 900;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- Form Container --- */
+        .form-container { padding: 20px; }
+        .input-label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #444;
+        }
+        .input-field {
+            width: 100%;
+            background-color: var(--light-gray);
+            border: 2px solid transparent;
+            padding: 15px;
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            border-color: var(--primary-green);
+            background-color: #fff;
+            outline: none;
+        }
+
+        /* --- Tips Section --- */
+        .tips-section {
+            padding: 20px;
+            background: #fdfdfd;
+            margin: 0 20px;
+            border-radius: 15px;
+            border: 1px dashed #ddd;
+            color: #666;
+            font-size: 12.5px;
+            line-height: 1.8;
+        }
+        .tips-title {
+            font-weight: 700;
+            color: #333;
+            font-size: 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- Submit Button --- */
+        .footer {
+            padding: 30px 20px;
+            margin-top: auto;
+        }
+        .submit-btn {
+            width: 100%;
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(140, 198, 63, 0.4);
+            transition: 0.3s;
+        }
+        .submit-btn:disabled {
+            background-color: #ccc;
+            box-shadow: none;
+        }
+
+        /* --- Beautiful Success Popup --- */
+        #successPopup {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none; align-items: center;
+            justify-content: center; z-index: 2000; backdrop-filter: blur(8px);
+        }
+        .popup-content {
+            background: white; width: 85%; max-width: 350px; padding: 30px;
+            border-radius: 30px; text-align: center; animation: slideUp 0.4s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .popup-icon { font-size: 60px; margin-bottom: 15px; }
+        .popup-title { font-size: 20px; font-weight: 800; color: #222; margin-bottom: 10px; }
+        .popup-msg { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px; }
+        .popup-btn {
+            background: var(--primary-green); color: white; padding: 12px 30px;
+            border-radius: 50px; font-weight: 700; display: inline-block; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Beautiful Popup Modal -->
+    <div id="successPopup">
+        <div class="popup-content">
+            <div class="popup-icon">✅</div>
+            <div class="popup-title">Withdraw Submitted</div>
+            <div class="popup-msg" id="dynamicMsg">
+                Withdraw will be received in 1 to 10 min if after verifying
+            </div>
+            <div class="popup-btn" onclick="goHome()">Great!</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <span class="back-icon" onclick="window.history.back()">❮</span>
+        <span class="title">Cashout</span>
+    </div>
+
+    <!-- Data Display Rows -->
+    <div class="info-row">
+        <span class="label">Money</span>
+        <span class="value" id="dispAmt">Rs 0.0</span>
+    </div>
+    <div class="info-row">
+        <span class="label">Coin</span>
+        <div class="coin-value">
+            <div class="coin-icon">$</div>
+            <span class="value" id="dispCoins">0</span>
+        </div>
+    </div>
+    <div class="info-row">
+        <span class="label">Channel</span>
+        <span class="value">Easypaisa</span>
+    </div>
+
+    <!-- Form Section -->
+    <div class="form-container">
+        <label class="input-label">Easypaisa account</label>
+        <input type="number" id="accNumber" class="input-field" placeholder="03xxxxxxxxx">
+
+        <label class="input-label">Full name</label>
+        <input type="text" id="accName" class="input-field" placeholder="Enter account holder name">
+    </div>
+
+    <!-- Tips Section -->
+    <div class="tips-section">
+        <div class="tips-title">💡 Tips</div>
+        <div>1) After withdrawal, it will be settled within 1-10 mins, please be patient</div>
+        <div>2) Check your account number carefully to avoid errors and failure.</div>
+        <div>3) Complete more offers to unlock higher withdrawal limits.</div>
+    </div>
+
+    <!-- Submit Area -->
+    <div class="footer">
+        <button class="submit-btn" id="submitBtn" onclick="processWithdrawal()">Submit</button>
+    </div>
+
+    <!-- Firebase Script Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+        // Firebase Configuration (Same as provided before)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk",
+            authDomain: "saqlainkareemweb.firebaseapp.com",
+            projectId: "saqlainkareemweb",
+            storageBucket: "saqlainkareemweb.firebasestorage.app",
+            messagingSenderId: "177483912823",
+            appId: "1:177483912823:web:cb4030fdf0e4311b6dd872"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        const selAmt = localStorage.getItem('selAmt') || 0;
+        const selCoins = localStorage.getItem('selCoins') || 0;
+
+        // Populate Data from Shop Selection
+        document.getElementById('dispAmt').innerText = "Rs " + selAmt;
+        document.getElementById('dispCoins').innerText = parseInt(selCoins).toLocaleString();
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUser = user;
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // Main Withdrawal Processing Logic
+        window.processWithdrawal = async function() {
+            const accNum = document.getElementById('accNumber').value;
+            const accName = document.getElementById('accName').value;
+            const btn = document.getElementById('submitBtn');
+
+            // Basic Validation
+            if (!accNum || !accName) {
+                alert("Please fill all details correctly.");
+                return;
+            }
+
+            if (accNum.length < 10) {
+                alert("Please enter a valid Easypaisa number.");
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerText = "Processing...";
+
+                // 1. Double check balance from server
+                const userRef = doc(db, "users", currentUser.uid);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    const currentBalance = userSnap.data().coins || 0;
+                    
+                    if (currentBalance < selCoins) {
+                        alert("Insufficient balance! You need " + selCoins + " coins.");
+                        btn.disabled = false;
+                        btn.innerText = "Submit";
+                        return;
+                    }
+
+                    // 2. Start Transaction: Deduct Points from User
+                    await updateDoc(userRef, {
+                        coins: increment(-selCoins)
+                    });
+
+                    // 3. Create Withdrawal Request Record
+                    await addDoc(collection(db, "users", currentUser.uid, "withdrawals"), {
+                        amount: selAmt,
+                        coins_deducted: selCoins,
+                        account_number: accNum,
+                        account_name: accName,
+                        method: "Easypaisa",
+                        status: "Processing",
+                        time: serverTimestamp()
+                    });
+
+                    // 4. Show Beautiful Success Popup
+                    document.getElementById('successPopup').style.display = "flex";
+
+                }
+            } catch (error) {
+                console.error("Withdrawal Error:", error);
+                alert("Something went wrong. Try again later.");
+                btn.disabled = false;
+                btn.innerText = "Submit";
+            }
+        };
+
+        // Navigation after success
+        window.goHome = function() {
+            window.location.href = "shop.html";
+        }
+
+    </script>
+</body>
+<!-- 
+    Quick Earn System v2.0
+    Ensuring secure transactions and live data sync.
+-->
+</html>

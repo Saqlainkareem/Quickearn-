@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Earn Crush - Help</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Poppins', sans-serif; user-select: none; }
+        body, html { margin: 0; padding: 0; background-color: #ffffff; color: #333; height: 100%; }
+
+        /* Header */
+        .header { display: flex; align-items: center; padding: 15px; position: sticky; top: 0; background: #fff; z-index: 100; height: 65px; }
+        .back-btn { font-size: 28px; cursor: pointer; text-decoration: none; color: #2d3436; font-weight: bold; width: 40px; }
+        .header-title { flex-grow: 1; text-align: center; font-size: 18px; font-weight: 700; margin-right: 40px; }
+
+        .content { padding: 20px; }
+
+        .section-label { font-size: 18px; font-weight: 700; margin: 10px 0 20px 0; color: #000; }
+
+        /* FAQ List */
+        .faq-item { margin-bottom: 5px; border-bottom: 1px solid #f9f9f9; }
+        .faq-question { display: flex; align-items: center; padding: 15px 0; cursor: pointer; }
+        .q-icon { width: 24px; height: 24px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; flex-shrink: 0; }
+        .q-text { flex-grow: 1; margin: 0 15px; font-size: 15px; font-weight: 500; color: #444; line-height: 1.3; }
+        .q-arrow { color: #ccc; font-size: 18px; transition: 0.3s; }
+
+        /* FAQ Answer (Hidden by default) */
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: #fdfdfd; padding: 0 40px; font-size: 13px; color: #666; line-height: 1.6; }
+        .faq-item.active .faq-answer { max-height: 200px; padding-bottom: 15px; }
+        .faq-item.active .q-arrow { transform: rotate(90deg); }
+
+        /* Footer Help Section */
+        .need-more { font-size: 18px; font-weight: 700; margin: 40px 0 15px 0; }
+        .contact-box { background: #f4f6f8; border-radius: 12px; display: flex; align-items: center; padding: 15px; margin-bottom: 10px; cursor: pointer; text-decoration: none; color: #333; }
+        .contact-icon { font-size: 22px; width: 30px; }
+        .contact-text { flex-grow: 1; margin-left: 10px; font-size: 14px; color: #bbb; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .copy-icon { font-size: 20px; color: #555; }
+
+        /* Toast */
+        #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; display: none; z-index: 1000; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="back-btn" onclick="history.back()">❮</div>
+    <div class="header-title">Help</div>
+</div>
+
+<div id="toast">✅ Email Copied!</div>
+
+<div class="content">
+    <div class="section-label">Popular help resources</div>
+
+    <!-- Question 1 -->
+    <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+            <div class="q-icon">?</div>
+            <div class="q-text">Does Easyearn require investment?</div>
+            <div class="q-arrow">❯</div>
+        </div>
+        <div class="faq-answer">
+            Quickearn is a completely free platform that requires no investment. On Easyearn, you can complete various tasks to earn coins, or you can invite friends to play together. This way, not only will your friends receive rewards, but you will also receive an extra 15%-20% commission on task rewards!
+        </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+            <div class="q-icon">?</div>
+            <div class="q-text">When will my Easyearn withdrawal arrive?</div>
+            <div class="q-arrow">❯</div>
+        </div>
+        <div class="faq-answer">
+            Quickearn has the fastest withdrawal speed of all apps. Your withdrawal will usually arrive within 1-3 hours, and at the latest, it will not exceed 3 business days.
+        </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+            <div class="q-icon">?</div>
+            <div class="q-text">What are the benefits of inviting users?</div>
+            <div class="q-arrow">❯</div>
+        </div>
+        <div class="faq-answer">
+            You can share your unique invitation link with friends to download our app. Not only will your friends receive rewards, but you'll also receive a referral bonus and a permanent 15%-20% commission on task rewards!
+        </div>
+    </div>
+
+    <!-- Question 4 -->
+    <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+            <div class="q-icon">?</div>
+            <div class="q-text">How to Earn Money on Easyearn?</div>
+            <div class="q-arrow">❯</div>
+        </div>
+        <div class="faq-answer">
+            You can complete surveys, play games, test apps, and rate and review various applications—all with clear instructions and no learning curve. Complete each task as required to earn coins, which can then be exchanged for cash! Each task only takes 2-5 minutes.
+        </div>
+    </div>
+
+    <div class="need-more">Need more help?</div>
+
+    <!-- Feedback Link -->
+    <a href="me.html" class="contact-box">
+        <div class="contact-icon">💬</div>
+        <div class="contact-text">Send feedback</div>
+    </a>
+
+    <!-- Email Copy Row -->
+    <div class="contact-box" onclick="copyEmail()">
+        <div class="contact-icon">✉️</div>
+        <div class="contact-text" id="emailTxt">Email: quickearn7282@gmail.com</div>
+        <div class="copy-icon">📋</div>
+    </div>
+</div>
+
+<script>
+    function toggleFaq(el) {
+        // Close other open ones
+        document.querySelectorAll('.faq-item').forEach(item => {
+            if (item !== el) item.classList.remove('active');
+        });
+        // Toggle current
+        el.classList.toggle('active');
+    }
+
+    function copyEmail() {
+        const email = "quickearn7282@gmail.com";
+        navigator.clipboard.writeText(email).then(() => {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2000);
+        });
+    }
+</script>
+
+</body>
+</html>

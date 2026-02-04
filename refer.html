@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Earn Crush - Refer & Earn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-header: #2d2d3a;
+            --bg: #f4f6f8;
+            --earn-green: #8bc34a;
+            --coin-yellow: #fbc02d;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Poppins', sans-serif; user-select: none; }
+        body, html { margin: 0; padding: 0; background-color: var(--bg); height: 100%; overflow: hidden; }
+
+        /* Header */
+        .header { background: var(--dark-header); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; height: 70px; position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .balance-box { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 20px; color: var(--coin-yellow); }
+        .balance-box img { width: 30px; }
+        .rs-val { color: var(--coin-yellow); font-size: 16px; opacity: 0.9; }
+        .user-avatar { width: 40px; height: 40px; background: #90a4ae; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #ccc; font-size: 18px; color: white; }
+
+        .content { padding: 75px 15px 100px 15px; height: 100vh; overflow-y: auto; text-align: center; }
+
+        /* Moving Notification Bar */
+        .notif-container { 
+            background: white; margin: 10px 0; padding: 10px; border-radius: 20px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; position: relative; height: 40px;
+        }
+        .notif-wrapper {
+            display: flex; flex-direction: column; animation: slideUp 20s infinite linear;
+        }
+        .notif-item {
+            height: 40px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 12px; color: #555; white-space: nowrap;
+        }
+        .notif-item img { width: 20px; }
+        @keyframes slideUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-400px); } /* 10 items * 40px */
+        }
+
+        /* Titles */
+        .refer-title { margin: 20px 0 10px 0; font-size: 24px; font-weight: 700; color: #333; }
+        .refer-amount { color: var(--earn-green); font-size: 28px; font-weight: 800; display: block; }
+
+        /* Steps */
+        .steps-container { display: flex; align-items: center; justify-content: space-between; margin: 30px 0; padding: 0 10px; }
+        .step-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .step-circle { width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .step-text { font-size: 10px; font-weight: 700; color: #333; }
+        .step-arrow { color: #ddd; font-size: 20px; font-weight: bold; }
+
+        /* Referral Card */
+        .leaderboard-card { background: white; border-radius: 25px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .lb-title { font-size: 22px; font-weight: 800; color: #333; margin-bottom: 20px; }
+        .lb-title span { color: var(--earn-green); }
+
+        .refer-now-btn { background: var(--earn-green); color: white; width: 100%; border: none; padding: 15px; border-radius: 30px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3); }
+
+        /* Popup Modal */
+        #referModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal-card { background: white; width: 90%; max-width: 350px; border-radius: 25px; padding: 20px; text-align: center; position: relative; }
+        .msg-box { background: #f9f9f9; border-radius: 15px; padding: 15px; font-size: 13px; color: #666; text-align: left; line-height: 1.5; border: 1px solid #eee; margin-bottom: 20px; }
+        .modal-close { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
+
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .social-icon-btn { cursor: pointer; }
+        .social-icon-btn img { width: 45px; margin-bottom: 5px; }
+        .social-icon-btn span { font-size: 11px; color: #666; display: block; }
+
+        /* Custom Success Toast */
+        #copyToast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 25px;
+            border-radius: 30px; font-size: 14px; font-weight: 600; display: none; z-index: 3000;
+            animation: fadeInOut 2s ease forwards;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            20% { opacity: 1; transform: translate(-50%, 0); }
+            80% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; padding-bottom: 8px; z-index: 1000; }
+        .nav-item { text-align: center; color: #aaa; font-size: 11px; font-weight: 600; text-decoration: none; width: 25%; }
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 2px; }
+        .nav-item.active { color: #4CAF50; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="balance-box">
+        <img src="pngs/coin.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
+        <span id="userCoins">0</span>
+        <span class="rs-val">≈ Rs<span id="rsBalance">0.00</span></span>
+    </div>
+    <div class="user-avatar" id="userInitial">?</div>
+</div>
+
+<!-- Success Toast -->
+<div id="copyToast">✅ Copy Successful</div>
+
+<div class="content">
+    <!-- Moving Referral Records -->
+    <div class="notif-container">
+        <div class="notif-wrapper" id="notif-list">
+            <!-- 10 Random Names will be injected here -->
+        </div>
+    </div>
+
+    <div class="refer-title">Refer Friends & Earn</div>
+    <span class="refer-amount">Rs215.00 !</span>
+
+    <!-- 3 Steps -->
+    <div class="steps-container">
+        <div class="step-item"><div class="step-circle">📧</div><div class="step-text">Refer friends</div></div>
+        <div class="step-arrow">≫</div>
+        <div class="step-item"><div class="step-circle">📋</div><div class="step-text">Complete 2 tasks</div></div>
+        <div class="step-arrow">≫</div>
+        <div class="step-item"><div class="step-circle">💰</div><div class="step-text">Get Rs20.00</div></div>
+    </div>
+
+    <div class="leaderboard-card">
+        <div class="lb-title"><span>Rs215.00</span> LEADERBOARD</div>
+        <button class="refer-now-btn" onclick="openReferModal()">Refer now</button>
+    </div>
+</div>
+
+<!-- Referral Modal -->
+<div id="referModal">
+    <div class="modal-card">
+        <div class="modal-title" style="font-size:18px; font-weight:700;">Suggested share message</div>
+        <div class="msg-box" id="fullShareMsg">
+            I found an online money-making app. You can withdraw cash after playing for 5 minutes. It's great! Join now: <br>
+            <span id="referLink" style="color:blue; font-weight:600; word-break: break-all;">https://earnercrush.web.app/join?uid=</span>
+        </div>
+        
+        <div class="social-grid">
+            <div class="social-icon-btn"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png"><span>Facebook</span></div>
+            <div class="social-icon-btn"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png"><span>Telegram</span></div>
+            <div class="social-icon-btn" onclick="copyReferLink()"><img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png"><span>Copy message</span></div>
+        </div>
+
+        <div class="modal-close" onclick="closeReferModal()">X</div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <a href="main.html" class="nav-item"><span class="nav-icon">🎁</span>Offer</a>
+    <a href="offer.html" class="nav-item"><span class="nav-icon">📋</span>My offers</a>
+    <a href="refer.html" class="nav-item active"><span class="nav-icon">👥</span>Refer</a>
+    <a href="shop.html" class="nav-item"><span class="nav-icon">💰</span>Cashout</a>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk",
+        authDomain: "saqlainkareemweb.firebaseapp.com",
+        projectId: "saqlainkareemweb",
+        storageBucket: "saqlainkareemweb.firebasestorage.app",
+        messagingSenderId: "177483912823",
+        appId: "1:177483912823:web:cb4030fdf0e4311b6dd872"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let finalLink = "";
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById('userInitial').innerText = user.email[0].toUpperCase();
+            finalLink = "https://earnercrush.web.app/join?uid=" + user.uid;
+            document.getElementById('referLink').innerText = finalLink;
+            
+            onSnapshot(doc(db, "users", user.uid), (d) => {
+                if(d.exists()) {
+                    const coins = d.data().coins || 0;
+                    document.getElementById('userCoins').innerText = coins.toLocaleString();
+                    document.getElementById('rsBalance').innerText = (coins / 1000).toFixed(2);
+                }
+            });
+        } else { window.location.href = "index.html"; }
+    });
+
+    // Random Names Notification Bar
+    const names = ["Ahmed R.", "Sana Malik", "Zohaib 786", "Irfan Khan", "Maria Q.", "Usman Ali", "Bilal Dev", "Sidra K.", "Hamza J.", "Ayesha"];
+    const notifList = document.getElementById('notif-list');
+    names.forEach(name => {
+        const friends = Math.floor(Math.random() * 5) + 1;
+        notifList.innerHTML += `<div class="notif-item"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"> [${name}] referred ${friends} friend(s) at 2026-01-24</div>`;
+    });
+    // Duplicate for smooth loop
+    notifList.innerHTML += notifList.innerHTML;
+
+    window.openReferModal = function() { document.getElementById('referModal').style.display = 'flex'; }
+    window.closeReferModal = function() { document.getElementById('referModal').style.display = 'none'; }
+
+    // FIXED COPY FUNCTION
+    window.copyReferLink = function() {
+        const textToCopy = document.getElementById('fullShareMsg').innerText;
+        
+        // Modern Method
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showSuccessToast();
+            });
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            showSuccessToast();
+        }
+    }
+
+    function showSuccessToast() {
+        const toast = document.getElementById('copyToast');
+        toast.style.display = 'block';
+        closeReferModal();
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    }
+</script>
+</body>
+</html>
