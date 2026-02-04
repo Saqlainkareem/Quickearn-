@@ -30,7 +30,6 @@
             min-height: 100vh;
         }
 
-        /* Top Status Bar Decoration */
         .status-header {
             width: 100%;
             height: 40px;
@@ -43,15 +42,13 @@
             color: rgba(0,0,0,0.5);
         }
 
-        /* Main Container */
         .main-wrapper {
             padding: 20px;
             max-width: 500px;
             margin: 0 auto;
-            padding-bottom: 120px; /* Space for sticky footer */
+            padding-bottom: 120px;
         }
 
-        /* Header Section */
         header {
             margin-top: 10px;
             margin-bottom: 30px;
@@ -69,18 +66,6 @@
             color: #616161;
         }
 
-        /* Floating Money Icons Background Animation */
-        .floating-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Hero Card */
         .hero-card {
             background: var(--white);
             border-radius: 30px;
@@ -91,16 +76,6 @@
             overflow: hidden;
             margin-bottom: 25px;
             border: 1px solid rgba(255,255,255,0.8);
-        }
-
-        .hero-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,152,0,0.05) 0%, transparent 70%);
         }
 
         .hero-card .currency-symbol {
@@ -119,7 +94,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Main Action Button */
         .btn-main {
             display: block;
             background: var(--orange-gradient);
@@ -135,55 +109,6 @@
             margin-bottom: 25px;
         }
 
-        .btn-main:active {
-            transform: scale(0.96);
-            box-shadow: 0 5px 15px rgba(245, 124, 0, 0.2);
-        }
-
-        .feature-description {
-            text-align: center;
-            font-size: 15px;
-            line-height: 1.6;
-            color: #424242;
-            margin-bottom: 40px;
-        }
-
-        /* Detailed Section: How it Works */
-        .how-it-works {
-            background: rgba(255,255,255,0.5);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-
-        .how-it-works h3 {
-            margin-bottom: 15px;
-            font-size: 18px;
-            color: #2e7d32;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .step-num {
-            width: 30px;
-            height: 30px;
-            background: #2e7d32;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        /* Fake Live Winner Notification */
         .winner-notification {
             background: white;
             padding: 10px 20px;
@@ -193,114 +118,52 @@
             display: flex;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            transition: opacity 0.5s ease;
         }
 
         .dot {
-            height: 8px;
-            width: 8px;
-            background-color: #4CAF50;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 10px;
-            animation: blink 1s infinite;
+            height: 8px; width: 8px; background-color: #4CAF50; border-radius: 50%;
+            display: inline-block; margin-right: 10px; animation: blink 1s infinite;
         }
 
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* Sticky Footer Bar */
         .sticky-footer {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 92%;
-            max-width: 460px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.5);
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 460px; background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px); border-radius: 25px; padding: 15px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); z-index: 1000;
         }
 
-        .app-meta {
-            display: flex;
-            align-items: center;
-        }
-
+        .app-meta { display: flex; align-items: center; }
         .app-icon-large {
-            width: 50px;
-            height: 50px;
-            background: #43a047;
-            border-radius: 12px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            font-weight: bold;
-            margin-right: 15px;
+            width: 50px; height: 50px; background: #43a047; border-radius: 12px;
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 30px; font-weight: bold; margin-right: 15px;
         }
 
-        .app-text-info .name {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--dark-text);
-        }
-
-        .app-text-info .size {
-            font-size: 12px;
-            color: #757575;
-        }
+        .app-text-info .name { font-size: 18px; font-weight: 700; }
+        .app-text-info .size { font-size: 12px; color: #757575; }
 
         .btn-download-small {
-            background: var(--orange-gradient);
-            color: white;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 15px;
-            box-shadow: 0 4px 10px rgba(245, 124, 0, 0.3);
+            background: var(--orange-gradient); color: white; text-decoration: none;
+            padding: 12px 25px; border-radius: 30px; font-weight: 700;
         }
 
-        /* Stats Section */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .stat-box { background: white; padding: 15px; border-radius: 20px; text-align: center; }
+        .how-it-works { background: rgba(255,255,255,0.5); border-radius: 20px; padding: 20px; margin-bottom: 30px; }
+        .step { display: flex; align-items: center; margin-bottom: 15px; }
+        .step-num { 
+            width: 30px; height: 30px; background: #2e7d32; color: white; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin-right: 15px; font-weight: bold;
         }
-
-        .stat-box {
-            background: white;
-            padding: 15px;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .stat-box .val { font-weight: 700; color: #f57c00; font-size: 18px; }
-        .stat-box .lbl { font-size: 11px; color: #757575; }
 
     </style>
 </head>
 <body>
-
-    <div class="floating-bg"></div>
 
     <div class="status-header">
         <span>9:41</span>
@@ -313,72 +176,55 @@
             <p>Log in now to claim your cash bonus</p>
         </header>
 
-        <!-- Dynamic Winner Notification -->
         <div class="winner-notification" id="winnerBox">
             <span class="dot"></span>
             <span id="winnerMsg">Ali R. just withdrew <b>PKR 5,000</b></span>
         </div>
 
-        <!-- Main $20 Card -->
         <div class="hero-card">
             <p class="currency-symbol">$20</p>
             <p style="color: #666; font-size: 14px; margin-top: 10px;">Pending Balance</p>
         </div>
 
-        <!-- Main Cashout Button -->
-        <a href="quickearn.apk" class="btn-main" id="cashoutBtn">Cash out Now</a>
+        <!-- Yahan Link Set Kar Diya Hai -->
+        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/download/v1.0/app.apk" class="btn-main" id="cashoutBtn" download>Cash out Now</a>
 
-        <div class="feature-description">
+        <div class="feature-description" style="text-align: center; margin-bottom: 30px;">
             Complete simple tasks, refer your friends and receive high rewards directly to your account.
         </div>
 
         <div class="stats-grid">
             <div class="stat-box">
-                <div class="val">200M+</div>
-                <div class="lbl">Global Players</div>
+                <div class="val" style="font-weight:700; color:#f57c00;">200M+</div>
+                <div class="lbl" style="font-size:11px;">Global Players</div>
             </div>
             <div class="stat-box">
-                <div class="val">4.9/5</div>
-                <div class="lbl">User Rating</div>
+                <div class="val" style="font-weight:700; color:#f57c00;">4.9/5</div>
+                <div class="lbl" style="font-size:11px;">User Rating</div>
             </div>
         </div>
 
-        <!-- How it works -->
         <div class="how-it-works">
-            <h3>How to Start?</h3>
-            <div class="step">
-                <div class="step-num">1</div>
-                <div>Download & Install the official app</div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div>Register with your mobile number</div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div>Share link & earn $20 for every friend</div>
-            </div>
+            <h3 style="color:#2e7d32; margin-bottom:15px;">How to Start?</h3>
+            <div class="step"><div class="step-num">1</div><div>Download & Install the app</div></div>
+            <div class="step"><div class="step-num">2</div><div>Register with mobile number</div></div>
+            <div class="step"><div class="step-num">3</div><div>Share link & earn $20</div></div>
         </div>
-
-        <p style="font-size: 12px; color: #999; text-align: center;">
-            Terms & Conditions apply. 100% Secure & Verified.
-        </p>
     </div>
 
-    <!-- Sticky Bottom Bar -->
+    <!-- Sticky Bottom Bar mein bhi Link Set Kar Diya Hai -->
     <div class="sticky-footer">
         <div class="app-meta">
             <div class="app-icon-large">$</div>
             <div class="app-text-info">
                 <div class="name">Quickearn</div>
-                <div class="size">v1.0.4 • 8.5 MB</div>
+                <div class="size">v1.0.0 • 1.0 MB</div>
             </div>
         </div>
-        <a href="quickearn.apk" class="btn-download-small">Download</a>
+        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/download/v1.0/app.apk" class="btn-download-small" download>Download</a>
     </div>
 
     <script>
-        // Winner Notification logic
         const winners = [
             "Saqlain K. just earned PKR 2,500",
             "Ahmed just withdrew PKR 10,000",
@@ -386,7 +232,6 @@
             "User992 just cashed out $50",
             "Hamza just joined & earned $20"
         ];
-        
         let i = 0;
         setInterval(() => {
             const box = document.getElementById('winnerBox');
@@ -397,13 +242,6 @@
                 i = (i + 1) % winners.length;
             }, 500);
         }, 4000);
-
-        // Download tracking
-        document.querySelectorAll('a').forEach(btn => {
-            btn.addEventListener('click', () => {
-                console.log("Download redirecting...");
-            });
-        });
     </script>
 
 </body>
