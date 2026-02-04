@@ -3,139 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Earn Crush - My Offers</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Earn Crush - Refer & Earn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --dark-header: #2d2d3a;
             --bg: #f4f6f8;
+            --earn-green: #8bc34a;
             --coin-yellow: #fbc02d;
-            --primary: #8bc34a;
-            --red: #e74c3c;
-            --glass: rgba(244, 246, 248, 0.96);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Poppins', sans-serif; }
-        body, html { margin: 0; padding: 0; background-color: var(--bg); height: 100%; width: 100%; overflow: hidden; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Poppins', sans-serif; user-select: none; }
+        body, html { margin: 0; padding: 0; background-color: var(--bg); height: 100%; overflow: hidden; }
 
-        /* --- FIXED: FULL SCREEN LOADER (COIN FIXED) --- */
-        #loader-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--glass); backdrop-filter: blur(10px);
-            z-index: 9999; display: flex; align-items: center; justify-content: center;
-            flex-direction: column; transition: 0.4s ease;
-        }
-        .loader-coin {
-            width: 60px; height: 60px;
-            animation: coinJump 1s infinite alternate cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
-        }
-        @keyframes coinJump {
-            0% { transform: translateY(20px); }
-            100% { transform: translateY(-40px); }
-        }
-        .loading-text { margin-top: 25px; font-size: 11px; font-weight: 800; color: #777; letter-spacing: 2px; }
-
-        /* HEADER */
+        /* Header */
         .header { background: var(--dark-header); color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; height: 70px; position: fixed; top: 0; width: 100%; z-index: 1000; }
-        .balance-box { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 19px; color: var(--coin-yellow); }
-        .user-avatar { width: 38px; height: 38px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; border: 2px solid #555; }
+        .balance-box { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 20px; color: var(--coin-yellow); }
+        .balance-box img { width: 30px; }
+        .rs-val { color: var(--coin-yellow); font-size: 14px; opacity: 0.9; }
+        .user-avatar { width: 40px; height: 40px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid rgba(255,255,255,0.5); font-size: 18px; color: white; }
 
-        /* SCROLL CONTENT */
-        .content { padding: 85px 15px 100px 15px; height: 100vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .content { padding: 85px 15px 100px 15px; height: 100vh; overflow-y: auto; text-align: center; }
 
-        /* BANNERS */
-        .banner-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        .banner-item { flex: 1; height: 90px; border-radius: 20px; padding: 12px; color: white; position: relative; overflow: hidden; background: linear-gradient(135deg, #42a5f5, #1e88e5); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .banner-item h3 { font-size: 13px; margin: 0; font-weight: 700; }
-        .banner-img { position: absolute; right: -5px; bottom: -5px; width: 50px; opacity: 0.6; }
-
-        /* NEW TASK CARDS (CLEAN DESIGN) */
-        .tracking-card { 
-            background: white; border-radius: 22px; margin-bottom: 15px; 
-            box-shadow: 0 3px 12px rgba(0,0,0,0.03); border: 1px solid #fff; 
-            position: relative; overflow: hidden; transition: 0.2s;
+        /* Moving Notification Bar */
+        .notif-container { 
+            background: white; margin: 10px 0; padding: 10px; border-radius: 20px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; position: relative; height: 40px;
         }
-        .tracking-card:active { transform: scale(0.98); }
+        .notif-wrapper {
+            display: flex; flex-direction: column; animation: slideUp 20s infinite linear;
+        }
+        .notif-item {
+            height: 40px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 12px; color: #555; white-space: nowrap;
+        }
+        .notif-item img { width: 20px; }
+        @keyframes slideUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-400px); }
+        }
+
+        /* Titles */
+        .refer-title { margin: 20px 0 10px 0; font-size: 24px; font-weight: 700; color: #333; }
+        .refer-amount { color: var(--earn-green); font-size: 28px; font-weight: 800; display: block; }
+
+        /* Steps */
+        .steps-container { display: flex; align-items: center; justify-content: space-between; margin: 30px 0; padding: 0 10px; }
+        .step-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .step-circle { width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .step-text { font-size: 10px; font-weight: 700; color: #333; }
+        .step-arrow { color: #ddd; font-size: 20px; font-weight: bold; }
+
+        /* Referral Card */
+        .leaderboard-card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .lb-title { font-size: 20px; font-weight: 800; color: #333; margin-bottom: 20px; text-transform: uppercase; }
+        .lb-title span { color: var(--earn-green); }
+
+        .refer-now-btn { background: var(--earn-green); color: white; width: 100%; border: none; padding: 16px; border-radius: 30px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(139, 195, 74, 0.3); }
+
+        /* Popup Modal */
+        #referModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(4px); }
+        .modal-card { background: white; width: 90%; max-width: 350px; border-radius: 30px; padding: 25px; text-align: center; position: relative; animation: popUp 0.3s ease-out; }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .status-badge { 
-            position: absolute; top: 0; right: 0; padding: 5px 15px; 
-            border-radius: 0 0 0 15px; font-size: 9px; font-weight: 800; 
-            text-transform: uppercase; color: white;
-        }
-        .bg-success { background: #2ed573; }
-        .bg-pending { background: #ffa502; }
-        .bg-fail { background: #ff4757; }
-        .bg-ai { background: #5352ed; }
+        .msg-box { background: #fdfdfd; border-radius: 15px; padding: 15px; font-size: 13px; color: #666; text-align: left; line-height: 1.6; border: 1px solid #eee; margin: 20px 0; }
+        .modal-close { position: absolute; bottom: -65px; left: 50%; transform: translateX(-50%); width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        .card-body { padding: 18px 15px; display: flex; align-items: center; }
-        .task-icon { width: 55px; height: 55px; border-radius: 15px; object-fit: cover; background: #f0f0f0; }
-        .task-info { margin-left: 15px; flex: 1; }
-        .task-name { font-size: 15px; font-weight: 800; color: #333; display: block; }
-        .task-coins { font-size: 13px; font-weight: 700; color: #555; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-        
-        /* RED REASON BOX */
-        .reason-box { 
-            margin: 0 15px 15px 15px; padding: 10px 12px; 
-            background: #fff5f5; border-radius: 12px; 
-            border-left: 4px solid var(--red); color: var(--red);
-            font-size: 11px; font-weight: 700; display: none; 
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .social-icon-btn { cursor: pointer; transition: 0.2s; }
+        .social-icon-btn:active { transform: scale(0.9); }
+        .social-icon-btn img { width: 45px; margin-bottom: 5px; }
+        .social-icon-btn span { font-size: 11px; color: #666; display: block; font-weight: 600; }
 
-        /* NAVIGATION */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; padding-bottom: 8px; z-index: 1000; }
-        .nav-item { text-align: center; color: #bbb; font-size: 11px; font-weight: 600; text-decoration: none; width: 25%; transition: 0.3s; }
-        .nav-item.active { color: #4CAF50; transform: translateY(-2px); }
+        /* Custom Success Toast */
+        #copyToast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85); color: white; padding: 12px 30px;
+            border-radius: 50px; font-size: 14px; font-weight: 600; display: none; z-index: 3000;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 78px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; padding-bottom: 8px; z-index: 1000; }
+        .nav-item { text-align: center; color: #bbb; font-size: 11px; font-weight: 600; text-decoration: none; width: 25%; }
         .nav-icon { font-size: 24px; display: block; margin-bottom: 2px; }
+        .nav-item.active { color: #4CAF50; }
     </style>
 </head>
 <body>
 
-<!-- Fixed Loader: No Half Screen Issue -->
-<div id="loader-overlay">
-    <img src="pngs/coin.png" class="loader-coin" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
-    <div class="loading-text">RETRIVING LATEST DATA...</div>
-</div>
-
 <div class="header">
     <div class="balance-box">
-        <img src="pngs/coin.png" width="28" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
+        <img src="pngs/coin.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1292/1292744.png'">
         <span id="userCoins">0</span>
+        <span class="rs-val">≈ Rs<span id="rsBalance">0.00</span></span>
     </div>
     <div class="user-avatar" id="userInitial">?</div>
 </div>
 
+<!-- Success Toast -->
+<div id="copyToast">✅ Link Copied Successfully!</div>
+
 <div class="content">
-    <div class="banner-row">
-        <div class="banner-item" style="background: linear-gradient(135deg, #ff9800, #f57c00);">
-            <h3>Manual Review</h3>
-            <p style="font-size: 10px;">Admin is Online</p>
-            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="banner-img">
-        </div>
-        <div class="banner-item" style="background: linear-gradient(135deg, #8bc34a, #689f38);">
-            <h3>AI Verify</h3>
-            <p style="font-size: 10px;">Fast Approval</p>
-            <img src="https://cdn-icons-png.flaticon.com/512/921/921347.png" class="banner-img">
-        </div>
+    <div class="notif-container">
+        <div class="notif-wrapper" id="notif-list"></div>
     </div>
 
-    <!-- Latest Tasks List -->
-    <div id="trackingList"></div>
+    <div class="refer-title">Refer Friends & Earn</div>
+    <span class="refer-amount">Rs20.00 !</span>
+
+    <!-- 3 Steps -->
+    <div class="steps-container">
+        <div class="step-item"><div class="step-circle">📧</div><div class="step-text">Refer friends</div></div>
+        <div class="step-arrow">≫</div>
+        <div class="step-item"><div class="step-circle">📋</div><div class="step-text">Complete tasks</div></div>
+        <div class="step-arrow">≫</div>
+        <div class="step-item"><div class="step-circle">💰</div><div class="step-text">Get Rs20.00</div></div>
+    </div>
+
+    <div class="leaderboard-card">
+        <div class="lb-title">Referral <span>Rewards</span></div>
+        <button class="refer-now-btn" onclick="openReferModal()">Refer now</button>
+    </div>
+</div>
+
+<!-- Referral Modal -->
+<div id="referModal">
+    <div class="modal-card">
+        <div style="font-size:18px; font-weight:800; color:#333;">Share with friends</div>
+        <div class="msg-box" id="fullShareMsg">
+            I found a great money-making app! Get Rs20 instantly for joining. Join now and start earning: <br><br>
+            <span id="referLink" style="color:#2196f3; font-weight:700; word-break: break-all;">Loading link...</span>
+        </div>
+        
+        <div class="social-grid">
+            <div class="social-icon-btn" onclick="shareOnSocial('wa')"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png"><span>WhatsApp</span></div>
+            <div class="social-icon-btn" onclick="shareOnSocial('tg')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png"><span>Telegram</span></div>
+            <div class="social-icon-btn" onclick="copyReferLink()"><img src="https://cdn-icons-png.flaticon.com/512/1621/1621635.png"><span>Copy Link</span></div>
+        </div>
+
+        <div class="modal-close" onclick="closeReferModal()">✕</div>
+    </div>
 </div>
 
 <div class="bottom-nav">
     <a href="main.html" class="nav-item"><span class="nav-icon">🎁</span>Offer</a>
-    <a href="offer.html" class="nav-item active"><span class="nav-icon">📋</span>My offers</a>
-    <a href="refer.html" class="nav-item"><span class="nav-icon">👥</span>Refer</a>
+    <a href="offer.html" class="nav-item"><span class="nav-icon">📋</span>My offers</a>
+    <a href="refer.html" class="nav-item active"><span class="nav-icon">👥</span>Refer</a>
     <a href="shop.html" class="nav-item"><span class="nav-icon">💰</span>Cashout</a>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, query, orderBy, limit, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk",
@@ -150,87 +169,56 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    let generatedLink = "";
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById('userInitial').innerText = user.email[0].toUpperCase();
-            loadBalance(user.uid);
-            // Limit 50 ensures only newest tasks load, making it fast
-            const q = query(collection(db, "users", user.uid, "my_tasks"), orderBy("timestamp", "desc"), limit(50));
             
-            onSnapshot(q, (snapshot) => {
-                const tasks = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                renderTasks(tasks);
-                hideLoader();
-
-                // 10-MIN AUTO SUCCESS LOGIC
-                tasks.forEach(t => {
-                    if(t.status === "Verifying" && t.timestamp) {
-                        const diff = (Date.now() - t.timestamp.seconds * 1000) / 60000;
-                        if(diff >= 10) finalizeAI(user.uid, t.id, t.points);
-                    }
-                });
+            // AUTOMATIC LIVE LINK GENERATION
+            // points to saqlainkareem.github.io/Quickearn-/index.html?ref=UID
+            const baseUrl = window.location.origin + window.location.pathname.replace('refer.html', 'index.html');
+            generatedLink = baseUrl + "?ref=" + user.uid;
+            document.getElementById('referLink').innerText = generatedLink;
+            
+            onSnapshot(doc(db, "users", user.uid), (d) => {
+                if(d.exists()) {
+                    const coins = d.data().coins || 0;
+                    document.getElementById('userCoins').innerText = coins.toLocaleString();
+                    document.getElementById('rsBalance').innerText = (coins / 1000).toFixed(2);
+                }
             });
         } else { window.location.href = "index.html"; }
     });
 
-    function renderTasks(tasks) {
-        const list = document.getElementById('trackingList');
-        if (tasks.length === 0) {
-            list.innerHTML = "<p style='text-align:center; padding-top:40px; color:#aaa;'>No tasks yet.</p>";
-            return;
-        }
+    // Notification loop
+    const names = ["Zeeshan", "Saba", "Ayaan", "Irfan", "Maria", "Usman", "Kashif", "Sidra", "Hamza", "Ayesha"];
+    const notifList = document.getElementById('notif-list');
+    names.forEach(n => {
+        notifList.innerHTML += `<div class="notif-item"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"> [${n}] just earned Rs20.00 from a referral!</div>`;
+    });
+    notifList.innerHTML += notifList.innerHTML;
 
-        list.innerHTML = tasks.map(d => {
-            let sText = "Review", sClass = "bg-pending", showReason = false;
-            
-            if(d.status === "Success") { sText = "Succeed"; sClass = "bg-success"; }
-            else if(d.status === "Processing") { sText = "Started"; sClass = "bg-pending"; }
-            else if(d.status === "Verifying") { sText = "AI Verify"; sClass = "bg-ai"; }
-            else if(d.status === "Rejected") { sText = "Invalid"; sClass = "bg-fail"; showReason = true; }
+    window.openReferModal = () => document.getElementById('referModal').style.display = 'flex';
+    window.closeReferModal = () => document.getElementById('referModal').style.display = 'none';
 
-            return `
-            <div class="tracking-card" onclick="handleCard('${d.status}', '${d.id}')">
-                <div class="status-badge ${sClass}">${sText}</div>
-                <div class="card-body">
-                    <img src="${d.icon || 'pngs/coin.png'}" class="task-icon">
-                    <div class="task-info">
-                        <span class="task-name">${d.name}</span>
-                        <div class="task-coins">
-                            <img src="pngs/coin.png" width="14">
-                            <span>${d.points} Points</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="reason-box" id="reason-${d.id}">⚠️ REASON: ${d.rejectReason || 'No details provided'}</div>
-            </div>`;
-        }).join('');
-    }
-
-    window.handleCard = (status, id) => {
-        if(status === "Processing") {
-            window.location.href = `details.html?id=${id}`;
-        } else if(status === "Rejected") {
-            const el = document.getElementById(`reason-${id}`);
-            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-        }
+    window.copyReferLink = () => {
+        const text = document.getElementById('fullShareMsg').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById('copyToast');
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2000);
+            closeReferModal();
+        });
     };
 
-    function loadBalance(uid) {
-        onSnapshot(doc(db, "users", uid), (d) => {
-            if(d.exists()) document.getElementById('userCoins').innerText = (d.data().coins || 0).toLocaleString();
-        });
-    }
-
-    async function finalizeAI(uid, tid, pts) {
-        const ref = doc(db, "users", uid, "my_tasks", tid);
-        await updateDoc(ref, { status: "Success" });
-        await updateDoc(doc(db, "users", uid), { coins: increment(pts) });
-    }
-
-    function hideLoader() {
-        const l = document.getElementById('loader-overlay');
-        if(l) { l.style.opacity = '0'; setTimeout(() => l.style.display='none', 500); }
-    }
+    window.shareOnSocial = (platform) => {
+        const msg = encodeURIComponent(document.getElementById('fullShareMsg').innerText);
+        let url = "";
+        if(platform === 'wa') url = `https://api.whatsapp.com/send?text=${msg}`;
+        if(platform === 'tg') url = `https://t.me/share/url?url=${generatedLink}&text=${msg}`;
+        window.open(url, '_blank');
+    };
 </script>
 </body>
 </html>
