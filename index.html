@@ -1,248 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QuickEarn - Earn Real Cash Today</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-green: #dcf0d0;
-            --secondary-green: #a8e6cf;
-            --orange-gradient: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
-            --white: #ffffff;
-            --dark-text: #2d3436;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Quick Earn - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<!-- SweetAlert2 for Beautiful Notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+<style>
+:root{ --green:#2ecc71; --dark:#2c3e50; --bg:#f9f9f9; --red:#e74c3c; }
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body{ background:var(--bg); color:var(--dark); overflow:hidden; height: 100vh; }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(180deg, var(--primary-green) 0%, #f1f8e9 100%);
-            color: var(--dark-text);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+/* ================= LOADER ================= */
+#appLoader {
+    position: fixed; top:0; left:0; width:100%; height:100%; 
+    background:#fff; display:flex; flex-direction:column; 
+    justify-content:center; align-items:center; z-index:9999;
+}
+.loader-icon {
+    width: 70px; height: 70px; background: var(--green);
+    border-radius: 22px; display: flex; align-items: center;
+    justify-content:center; font-size: 40px; color: #fff;
+    animation: pulse 1.5s infinite; box-shadow: 0 10px 20px rgba(46,204,113,0.3);
+}
+@keyframes pulse {
+    0% { transform: scale(0.95); }
+    70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(46,204,113,0); }
+    100% { transform: scale(0.95); }
+}
+.loader-text { margin-top: 15px; font-weight: 800; font-size: 22px; color: var(--dark); }
+.loader-text span { color: var(--green); }
 
-        .status-header {
-            width: 100%;
-            height: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(0,0,0,0.5);
-        }
-
-        .main-wrapper {
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-            padding-bottom: 120px;
-        }
-
-        header {
-            margin-top: 10px;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1b5e20;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            font-size: 16px;
-            color: #616161;
-        }
-
-        .hero-card {
-            background: var(--white);
-            border-radius: 30px;
-            padding: 50px 20px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.8);
-        }
-
-        .hero-card .currency-symbol {
-            font-size: 80px;
-            font-weight: 800;
-            background: linear-gradient(180deg, #FFB74D, #F57C00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .btn-main {
-            display: block;
-            background: var(--orange-gradient);
-            color: var(--white);
-            text-decoration: none;
-            text-align: center;
-            padding: 20px;
-            border-radius: 50px;
-            font-size: 22px;
-            font-weight: 700;
-            box-shadow: 0 10px 25px rgba(245, 124, 0, 0.4);
-            transition: all 0.3s ease;
-            margin-bottom: 25px;
-        }
-
-        .winner-notification {
-            background: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 13px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: opacity 0.5s ease;
-        }
-
-        .dot {
-            height: 8px; width: 8px; background-color: #4CAF50; border-radius: 50%;
-            display: inline-block; margin-right: 10px; animation: blink 1s infinite;
-        }
-
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        .sticky-footer {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 460px; background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px); border-radius: 25px; padding: 15px 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15); z-index: 1000;
-        }
-
-        .app-meta { display: flex; align-items: center; }
-        .app-icon-large {
-            width: 50px; height: 50px; background: #43a047; border-radius: 12px;
-            color: white; display: flex; align-items: center; justify-content: center;
-            font-size: 30px; font-weight: bold; margin-right: 15px;
-        }
-
-        .app-text-info .name { font-size: 18px; font-weight: 700; }
-        .app-text-info .size { font-size: 12px; color: #757575; }
-
-        .btn-download-small {
-            background: var(--orange-gradient); color: white; text-decoration: none;
-            padding: 12px 25px; border-radius: 30px; font-weight: 700;
-        }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-        .stat-box { background: white; padding: 15px; border-radius: 20px; text-align: center; }
-        .how-it-works { background: rgba(255,255,255,0.5); border-radius: 20px; padding: 20px; margin-bottom: 30px; }
-        .step { display: flex; align-items: center; margin-bottom: 15px; }
-        .step-num { 
-            width: 30px; height: 30px; background: #2e7d32; color: white; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            margin-right: 15px; font-weight: bold;
-        }
-
-    </style>
+/* Login UI */
+.login-container { 
+    height: 100vh; display: flex; flex-direction: column; 
+    justify-content: center; align-items: center; padding: 30px;
+    background: #fff;
+}
+.google-btn {
+    width: 100%; max-width: 320px; padding: 16px; border-radius: 18px;
+    border: 1px solid #eee; background: #fff; display: flex;
+    align-items: center; justify-content: center; gap: 12px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    transition: 0.3s;
+}
+.google-btn:active { transform: scale(0.96); }
+h1 span { color: var(--green); }
+</style>
 </head>
 <body>
 
-    <div class="status-header">
-        <span>9:41</span>
-        <span>⚡ QuickEarn Official</span>
+<div id="appLoader">
+    <div class="loader-icon">$</div>
+    <div class="loader-text">Quick<span>Earn</span></div>
+</div>
+
+<div class="login-container">
+    <div style="text-align:center; margin-bottom: 40px;">
+        <div class="loader-icon" style="animation:none; margin:auto">$</div>
+        <h1 style="margin-top:15px; font-size: 32px;">Quick<span>Earn</span></h1>
+        <p style="color:#888; font-size: 14px;">The fastest way to earn rewards</p>
     </div>
 
-    <div class="main-wrapper">
-        <header>
-            <h1>Refer & Earn</h1>
-            <p>Log in now to claim your cash bonus</p>
-        </header>
+    <button class="google-btn" id="loginBtn">
+        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="24">
+        Continue with Google
+    </button>
 
-        <div class="winner-notification" id="winnerBox">
-            <span class="dot"></span>
-            <span id="winnerMsg">Ali R. just withdrew <b>PKR 5,000</b></span>
-        </div>
-
-        <div class="hero-card">
-            <p class="currency-symbol">$20</p>
-            <p style="color: #666; font-size: 14px; margin-top: 10px;">Pending Balance</p>
-        </div>
-
-        <!-- Working Link Updated Here -->
-        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/latest/download/app.apk" class="btn-main" id="cashoutBtn" download>Cash out Now</a>
-
-        <div class="feature-description" style="text-align: center; margin-bottom: 30px;">
-            Complete simple tasks, refer your friends and receive high rewards directly to your account.
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="val" style="font-weight:700; color:#f57c00;">200M+</div>
-                <div class="lbl" style="font-size:11px;">Global Players</div>
-            </div>
-            <div class="stat-box">
-                <div class="val" style="font-weight:700; color:#f57c00;">4.9/5</div>
-                <div class="lbl" style="font-size:11px;">User Rating</div>
-            </div>
-        </div>
-
-        <div class="how-it-works">
-            <h3 style="color:#2e7d32; margin-bottom:15px;">How to Start?</h3>
-            <div class="step"><div class="step-num">1</div><div>Download & Install the app</div></div>
-            <div class="step"><div class="step-num">2</div><div>Register with mobile number</div></div>
-            <div class="step"><div class="step-num">3</div><div>Share link & earn $20</div></div>
-        </div>
+    <div style="position: absolute; bottom: 30px; text-align: center;">
+        <p style="font-size:12px; color:#bbb; letter-spacing: 1px;">POWERED BY AI SECURITY</p>
     </div>
+</div>
 
-    <!-- Working Link Updated Here in Footer -->
-    <div class="sticky-footer">
-        <div class="app-meta">
-            <div class="app-icon-large">$</div>
-            <div class="app-text-info">
-                <div class="name">Quickearn</div>
-                <div class="size">v1.0.0 • 1.0 MB</div>
-            </div>
-        </div>
-        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/latest/download/app.apk" class="btn-download-small" download>Download</a>
-    </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
-    <script>
-        const winners = [
-            "Saqlain K. just earned PKR 2,500",
-            "Ahmed just withdrew PKR 10,000",
-            "Saira won PKR 1,200 from referral",
-            "User992 just cashed out $50",
-            "Hamza just joined & earned $20"
-        ];
-        let i = 0;
-        setInterval(() => {
-            const box = document.getElementById('winnerBox');
-            box.style.opacity = 0;
-            setTimeout(() => {
-                document.getElementById('winnerMsg').innerHTML = winners[i];
-                box.style.opacity = 1;
-                i = (i + 1) % winners.length;
-            }, 500);
-        }, 4000);
-    </script>
+const firebaseConfig = {
+    apiKey: "AIzaSyAE7aGKY6NnW8hAj2nmhJrl7HWr-CVaTHk",
+    authDomain: "saqlainkareemweb.firebaseapp.com",
+    projectId: "saqlainkareemweb",
+    storageBucket: "saqlainkareemweb.firebasestorage.app",
+    messagingSenderId: "177483912823",
+    appId: "1:177483912823:web:cb4030fdf0e4311b6dd872"
+};
 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+// Custom Toast Notification Function
+const showMsg = (msg, type = 'success') => {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
+    Toast.fire({ icon: type, title: msg });
+};
+
+// Device ID Logic
+const getDeviceID = () => {
+    let id = localStorage.getItem("u_device_id") || "dev_" + Math.random().toString(36).substr(2, 12);
+    localStorage.setItem("u_device_id", id);
+    return id;
+};
+
+// ================= HANDLE LOGIN LOGIC =================
+const handleUserAuth = async (user) => {
+    if (!user) return;
+    
+    document.getElementById("appLoader").style.display = "flex";
+    try {
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+
+        if (snap.exists()) {
+            // Existing User
+            localStorage.setItem('user_bal_cache', snap.data().coins);
+            showMsg("Welcome back, " + user.displayName);
+            setTimeout(() => window.location.href = "main.html", 1500);
+        } else {
+            // New User - Check Device Limit
+            const dId = getDeviceID();
+            const q = query(collection(db, "users"), where("deviceId", "==", dId));
+            const qs = await getDocs(q);
+            
+            if (!qs.empty) {
+                showMsg("Security Alert: Multi-account not allowed!", 'error');
+                await signOut(auth);
+                setTimeout(() => location.reload(), 3000);
+                return;
+            }
+
+            // Create New Account
+            const userData = { 
+                uid: user.uid, 
+                name: user.displayName, 
+                email: user.email, 
+                coins: 50, 
+                deviceId: dId,
+                joinedAt: serverTimestamp()
+            };
+            await setDoc(userRef, userData);
+            localStorage.setItem('user_bal_cache', 50);
+            showMsg("Account Created! 50 Coins Added.");
+            setTimeout(() => window.location.href = "main.html", 2000);
+        }
+    } catch (err) {
+        showMsg("Database Error: " + err.message, 'error');
+        document.getElementById("appLoader").style.display = "none";
+    }
+};
+
+// Check for Redirect Result on Load
+getRedirectResult(auth).then((result) => {
+    if (result?.user) {
+        handleUserAuth(result.user);
+    }
+}).catch((error) => {
+    showMsg("Login Error: " + error.message, 'error');
+});
+
+// Auth State Monitor
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        handleUserAuth(user);
+    } else {
+        document.getElementById("appLoader").style.display = "none";
+    }
+});
+
+// Login Button Click
+document.getElementById("loginBtn").onclick = () => {
+    showMsg("Connecting to Google...", 'info');
+    signInWithRedirect(auth, provider);
+};
+</script>
 </body>
 </html>
