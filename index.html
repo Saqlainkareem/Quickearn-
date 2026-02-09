@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QuickEarn - Earn Real Cash Today</title>
+    <title>QuickEarn - Get Your App Now!</title> <!-- Title changed -->
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -172,8 +172,8 @@
 
     <div class="main-wrapper">
         <header>
-            <h1>Refer & Earn</h1>
-            <p>Log in now to claim your cash bonus</p>
+            <h1>Join QuickEarn Now!</h1> <!-- Header changed -->
+            <p>Get your <span id="bonusAmount"></span> bonus when you sign up using referral link!</p> <!-- Text changed -->
         </header>
 
         <div class="winner-notification" id="winnerBox">
@@ -182,12 +182,12 @@
         </div>
 
         <div class="hero-card">
-            <p class="currency-symbol">$20</p>
-            <p style="color: #666; font-size: 14px; margin-top: 10px;">Pending Balance</p>
+            <p class="currency-symbol" id="displayBonus">$20</p> <!-- ID added -->
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">Your Bonus Awaits!</p> <!-- Text changed -->
         </div>
 
-        <!-- Yahan Sahi Link (Bara V) Set Kar Diya Hai -->
-        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/download/V1.0/app.apk" class="btn-main" id="cashoutBtn" download>Cash out Now</a>
+        <!-- Download Link (Bara V) Updated -->
+        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/download/V1.0/QuickEarn.apk" class="btn-main" id="downloadMainBtn" download>Download QuickEarn App Now!</a> <!-- ID and Text changed -->
 
         <div class="feature-description" style="text-align: center; margin-bottom: 30px;">
             Complete simple tasks, refer your friends and receive high rewards directly to your account.
@@ -205,14 +205,14 @@
         </div>
 
         <div class="how-it-works">
-            <h3 style="color:#2e7d32; margin-bottom:15px;">How to Start?</h3>
+            <h3 style="color:#2e7d32; margin-bottom:15px;">How to Get Started?</h3> <!-- Header changed -->
             <div class="step"><div class="step-num">1</div><div>Download & Install the app</div></div>
-            <div class="step"><div class="step-num">2</div><div>Register with mobile number</div></div>
-            <div class="step"><div class="step-num">3</div><div>Share link & earn $20</div></div>
+            <div class="step"><div class="step-num">2</div><div>Register with your mobile number</div></div> <!-- Text changed -->
+            <div class="step"><div class="step-num">3</div><div>Complete tasks & refer friends to earn!</div></div> <!-- Text changed -->
         </div>
     </div>
 
-    <!-- Sticky Bottom Bar mein bhi Sahi Link (Bara V) Set Kar Diya Hai -->
+    <!-- Sticky Bottom Bar mein bhi Download Link (Bara V) Updated -->
     <div class="sticky-footer">
         <div class="app-meta">
             <div class="app-icon-large">$</div>
@@ -221,10 +221,35 @@
                 <div class="size">v1.0.0 • 1.0 MB</div>
             </div>
         </div>
-        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/download/V1.0/app.apk" class="btn-download-small" download>Download</a>
+        <a href="https://github.com/Saqlainkareem/Quickearn-/releases/download/V1.0/QuickEarn.apk" class="btn-download-small" id="downloadFooterBtn" download>Download App</a> <!-- ID and Text changed -->
     </div>
 
     <script>
+        // Function to parse URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+
+        const referralId = getUrlParameter('ref'); // Get referral ID from URL
+        const bonusFromUrl = getUrlParameter('bonus'); // Get bonus amount from URL (optional)
+
+        // Display bonus amount
+        const defaultBonus = "$20"; // Default bonus if not provided in URL
+        document.getElementById('displayBonus').textContent = bonusFromUrl || defaultBonus;
+        document.getElementById('bonusAmount').textContent = bonusFromUrl || defaultBonus; // Header text
+
+        if (referralId) {
+            console.log("Referral ID:", referralId);
+            // Yahan aap referralId ko use kar sakte hain.
+            // Maslan: Agar aapka app install hone ke baad server ko yeh ID bhejta hai,
+            // toh aap is ID ko local storage mein store kar sakte hain.
+            localStorage.setItem('quickearn_referral_id', referralId);
+        }
+
+        // Winner notification animation (unchanged)
         const winners = [
             "Saqlain K. just earned PKR 2,500",
             "Ahmed just withdrew PKR 10,000",
